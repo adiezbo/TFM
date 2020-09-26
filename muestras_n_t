@@ -1,0 +1,171 @@
+```{r COAD} 
+#BiocManager::install("GenomicDataCommons")
+library(GenomicDataCommons)
+library(dplyr)
+
+#Filtramos muestras de metilacion de tejido normal
+nl_ge_files_COAD = files() %>%
+    GenomicDataCommons::filter(~cases.samples.sample_type=='Solid Tissue Normal' &
+               cases.project.project_id == 'TCGA-COAD' &
+               data_type == "Methylation Beta Value") %>%
+    expand(c('cases','cases.samples')) %>%
+    results_all() %>%
+    as_tibble()
+
+#Filtramos muestras de metilacion de tejido tumoral
+tm_ge_files_COAD = files() %>%
+    GenomicDataCommons::filter(~cases.samples.sample_type=='Primary Tumor' &
+               cases.project.project_id == 'TCGA-COAD' &
+               data_type == "Methylation Beta Value") %>%
+    expand(c('cases','cases.samples')) %>%
+    results_all() %>%
+    as_tibble()
+
+#Nos quedamos solo con muestras de pacientes con tejido normal y tumoral
+nl_cases_COAD = bind_rows(nl_ge_files_COAD$cases, .id='file_id')
+tm_cases_COAD = bind_rows(tm_ge_files_COAD$cases, .id='file_id')
+matchedcases_COAD = intersect(nl_cases_COAD$case_id, tm_cases_COAD$case_id)
+COAD <- length(matchedcases_COAD) 
+
+#Creamos data frame con muestras n y t apareadas
+matched_nl_files_COAD = nl_cases_COAD[nl_cases_COAD$case_id %in% matchedcases_COAD, 'file_id']
+matched_tm_files_COAD = tm_cases_COAD[tm_cases_COAD$case_id %in% matchedcases_COAD, 'file_id']
+
+matched_tn_ge_file_info_COAD = rbind(subset(nl_ge_files_COAD,file_id %in% matched_nl_files_COAD),
+                                subset(tm_ge_files_COAD,file_id %in% matched_tm_files_COAD))
+head(matched_tn_ge_file_info_COAD)
+
+#Nos quedamos solo con muestras de Illumina Human Methylation 450
+matched_tn_ge_file_info_COAD <- matched_tn_ge_file_info_COAD[!matched_tn_ge_file_info_COAD$platform == "Illumina Human Methylation 27",]
+```
+```{r LIHC} 
+#BiocManager::install("GenomicDataCommons")
+library(GenomicDataCommons)
+library(dplyr)
+
+#Filtramos muestras de metilacion de tejido normal
+nl_ge_files_LIHC = files() %>%
+    GenomicDataCommons::filter(~cases.samples.sample_type=='Solid Tissue Normal' &
+               cases.project.project_id == 'TCGA-LIHC' &
+               data_type == "Methylation Beta Value") %>%
+    expand(c('cases','cases.samples')) %>%
+    results_all() %>%
+    as_tibble()
+
+#Filtramos muestras de metilacion de tejido tumoral
+tm_ge_files_LIHC = files() %>%
+    GenomicDataCommons::filter(~cases.samples.sample_type=='Primary Tumor' &
+               cases.project.project_id == 'TCGA-LIHC' &
+               data_type == "Methylation Beta Value") %>%
+    expand(c('cases','cases.samples')) %>%
+    results_all() %>%
+    as_tibble()
+
+#Nos quedamos solo con muestras de pacientes con tejido normal y tumoral
+nl_cases_LIHC = bind_rows(nl_ge_files_LIHC$cases, .id='file_id')
+tm_cases_LIHC = bind_rows(tm_ge_files_LIHC$cases, .id='file_id')
+matchedcases_LIHC = intersect(nl_cases_LIHC$case_id, tm_cases_LIHC$case_id)
+LIHC <- length(matchedcases_LIHC) 
+
+#Creamos data frame con muestras n y t apareadas
+matched_nl_files_LIHC = nl_cases_LIHC[nl_cases_LIHC$case_id %in% matchedcases_LIHC, 'file_id']
+matched_tm_files_LIHC = tm_cases_LIHC[tm_cases_LIHC$case_id %in% matchedcases_LIHC, 'file_id']
+
+matched_tn_ge_file_info_LIHC = rbind(subset(nl_ge_files_LIHC,file_id %in% matched_nl_files_LIHC),
+                                subset(tm_ge_files_LIHC,file_id %in% matched_tm_files_LIHC))
+head(matched_tn_ge_file_info_LIHC)
+
+#Nos quedamos solo con muestras de Illumina Human Methylation 450
+matched_tn_ge_file_info_LIHC <- matched_tn_ge_file_info_LIHC[!matched_tn_ge_file_info_LIHC$platform == "Illumina Human Methylation 27",]
+```
+
+```{r LUAD} 
+#BiocManager::install("GenomicDataCommons")
+library(GenomicDataCommons)
+library(dplyr)
+
+#Filtramos muestras de metilacion de tejido normal
+nl_ge_files_LUAD = files() %>%
+    GenomicDataCommons::filter(~cases.samples.sample_type=='Solid Tissue Normal' &
+               cases.project.project_id == 'TCGA-LUAD' &
+               data_type == "Methylation Beta Value") %>%
+    expand(c('cases','cases.samples')) %>%
+    results_all() %>%
+    as_tibble()
+
+#Filtramos muestras de metilacion de tejido tumoral
+tm_ge_files_LUAD = files() %>%
+    GenomicDataCommons::filter(~cases.samples.sample_type=='Primary Tumor' &
+               cases.project.project_id == 'TCGA-LUAD' &
+               data_type == "Methylation Beta Value") %>%
+    expand(c('cases','cases.samples')) %>%
+    results_all() %>%
+    as_tibble()
+
+#Nos quedamos solo con muestras de pacientes con tejido normal y tumoral
+nl_cases_LUAD = bind_rows(nl_ge_files_LUAD$cases, .id='file_id')
+tm_cases_LUAD = bind_rows(tm_ge_files_LUAD$cases, .id='file_id')
+matchedcases_LUAD = intersect(nl_cases_LUAD$case_id, tm_cases_LUAD$case_id)
+LUAD <- length(matchedcases_LUAD) 
+
+#Creamos data frame con muestras n y t apareadas
+matched_nl_files_LUAD = nl_cases_LUAD[nl_cases_LUAD$case_id %in% matchedcases_LUAD, 'file_id']
+matched_tm_files_LUAD = tm_cases_LUAD[tm_cases_LUAD$case_id %in% matchedcases_LUAD, 'file_id']
+
+matched_tn_ge_file_info_LUAD = rbind(subset(nl_ge_files_LUAD,file_id %in% matched_nl_files_LUAD),
+                                subset(tm_ge_files_LUAD,file_id %in% matched_tm_files_LUAD))
+head(matched_tn_ge_file_info_LUAD)
+
+#Nos quedamos solo con muestras de Illumina Human Methylation 450
+matched_tn_ge_file_info_LUAD <- matched_tn_ge_file_info_LUAD[!matched_tn_ge_file_info_LUAD$platform == "Illumina Human Methylation 27",]
+```
+
+
+```{r PAAD} 
+#BiocManager::install("GenomicDataCommons")
+library(GenomicDataCommons)
+library(dplyr)
+
+#Filtramos muestras de metilacion de tejido normal
+nl_ge_files_PAAD = files() %>%
+    GenomicDataCommons::filter(~cases.samples.sample_type=='Solid Tissue Normal' &
+               cases.project.project_id == 'TCGA-PAAD' &
+               data_type == "Methylation Beta Value") %>%
+    expand(c('cases','cases.samples')) %>%
+    results_all() %>%
+    as_tibble()
+
+#Filtramos muestras de metilacion de tejido tumoral
+tm_ge_files_PAAD = files() %>%
+    GenomicDataCommons::filter(~cases.samples.sample_type=='Primary Tumor' &
+               cases.project.project_id == 'TCGA-PAAD' &
+               data_type == "Methylation Beta Value") %>%
+    expand(c('cases','cases.samples')) %>%
+    results_all() %>%
+    as_tibble()
+
+#Nos quedamos solo con muestras de pacientes con tejido normal y tumoral
+nl_cases_PAAD = bind_rows(nl_ge_files_PAAD$cases, .id='file_id')
+tm_cases_PAAD = bind_rows(tm_ge_files_PAAD$cases, .id='file_id')
+matchedcases_PAAD = intersect(nl_cases_PAAD$case_id, tm_cases_PAAD$case_id)
+PAAD <- length(matchedcases_PAAD) 
+
+#Creamos data frame con muestras n y t apareadas
+matched_nl_files_PAAD = nl_cases_PAAD[nl_cases_PAAD$case_id %in% matchedcases_PAAD, 'file_id']
+matched_tm_files_PAAD = tm_cases_PAAD[tm_cases_PAAD$case_id %in% matchedcases_PAAD, 'file_id']
+
+matched_tn_ge_file_info_PAAD = rbind(subset(nl_ge_files_PAAD,file_id %in% matched_nl_files_PAAD),
+                                subset(tm_ge_files_PAAD,file_id %in% matched_tm_files_PAAD))
+head(matched_tn_ge_file_info_PAAD)
+
+#Nos quedamos solo con muestras de Illumina Human Methylation 450
+matched_tn_ge_file_info_PAAD <- matched_tn_ge_file_info_PAAD[!matched_tn_ge_file_info_PAAD$platform == "Illumina Human Methylation 27",]
+```
+
+-------------- TOTAL MUESTRAS --------------
+```{r}
+COAD #75
+LIHC #50
+LUAD #55
+PAAD #10
+```
