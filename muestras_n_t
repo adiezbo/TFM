@@ -1,3 +1,5 @@
+### SELECCIÓN DE MUESTRAS N Y T COAD ###
+
 ```{r COAD} 
 setwd("./Rstudio")
 #BiocManager::install("GenomicDataCommons")
@@ -45,6 +47,8 @@ muestras_COAD = data.frame(lapply(matched_tn_met_file_info_COAD, as.character), 
 write.table(muestras_COAD, file = "muestras_COAD.txt", sep = "\t", col.names = TRUE, row.names = TRUE, quote = F)
 ```
 
+### SELECCIÓN DE MUESTRAS N Y T LIHC ###
+
 ```{r LIHC} 
 setwd("./Rstudio")
 #BiocManager::install("GenomicDataCommons")
@@ -89,6 +93,8 @@ muestras_LIHC = data.frame(lapply(matched_tn_met_file_info_LIHC, as.character), 
 #write.txt("muestras_LIHC.txt")
 write.table(muestras_LIHC, file = "muestras_LIHC.txt", sep = "\t", col.names = TRUE, row.names = TRUE, quote = F)
 ```
+
+### SELECCIÓN DE MUESTRAS N Y T LUAD ###
 
 ```{r LUAD} 
 setwd("./Rstudio")
@@ -135,6 +141,7 @@ muestras_LUAD = data.frame(lapply(matched_tn_met_file_info_LUAD, as.character), 
 write.table(muestras_LUAD, file = "muestras_LUAD.txt", sep = "\t", col.names = TRUE, row.names = TRUE, quote = F)
 ```
 
+### SELECCIÓN DE MUESTRAS N Y T PAAD ###
 
 ```{r PAAD} 
 setwd("./Rstudio")
@@ -183,51 +190,93 @@ write.table(muestras_PAAD, file = "muestras_PAAD.txt", sep = "\t", col.names = T
                   
 ```
 
--------------- TOTAL MUESTRAS --------------
-```{r}
-COAD #75
-LIHC #50
-LUAD #55
-PAAD #10
-```
------------------------------DESCARGA DATOS ----------------------------------
+### NUMERO DE PACIENTES CON MUESTRAS N Y T ###
 
-```{r COAD descarga}
+```{r}
+COAD
+LIHC
+LUAD
+PAAD
+```
+[1] 38
+[1] 50
+[1] 29
+[1] 10
+
+### SELECCION DE BARCODES DE PACIENTES DE INTERES ###
+
+```{r seleccion barcodes}
+#install.packages("tidyverse")
+library(tidyverse)
+barcodes_paad <- str_sub(matched_tn_met_file_info_PAAD$file_name, 46, 64)
+barcodes_paad
+
+barcodes_coad <- str_sub(matched_tn_met_file_info_COAD$file_name, 46, 64)
+barcodes_coad
+
+barcodes_LIHC <- str_sub(matched_tn_met_file_info_LIHC$file_name, 46, 64)
+barcodes_LIHC
+
+barcodes_LUAD <- str_sub(matched_tn_met_file_info_LUAD$file_name, 46, 64)
+barcodes_LUAD
+```
+
+### DESCARGA DE DATOS A PARTIR DE LOS BARCODES ###
+
+```{r Descarga}
 setwd("./Rstudio")
 library(TCGAbiolinks)
-query.met.coad <- GDCquery(project = "TCGA-COAD",
-                          legacy = TRUE,
-                          data.category = "DNA methylation",
-                          platform = "Illumina Human Methylation 450",
-                          file.type = "hg19.txt",
-                          sample.type = c("Primary Tumor", "Solid Tissue Normal"),
-                          barcode =  c("TCGA-G4-6625-11A-01D-1772-05", "TCGA-A6-4107-11A-01D-1551-0", "TCGA-A6-2684-11A-01D-1551-05", "TCGA-AA-3712-11A-01D-1721-05", "TCGA-AZ-6601-11A-01D-1772-05",".TCGA-A6-4107-01A-02D-1407-05"))
+coad <- "TCGA-COAD"
+query.met.coad_prueba <- GDCquery(project = coad,
+                  legacy = TRUE,
+                  data.category = "DNA methylation",
+                  platform = "Illumina Human Methylation 450",
+                  sample.type = c("Primary Tumor", "Solid Tissue Normal"),
+                  barcode = barcodes_coad)
+
+GDCdownload(query.met.coad_prueba)
+
 ```
-Genome of reference: hg19
---------------------------------------------
-oo Accessing GDC. This might take a while...
---------------------------------------------
-ooo Project: TCGA-COAD
---------------------
-oo Filtering results
---------------------
-ooo By platform
-ooo By file.type
 
+```{r Descarga PAAD}
+setwd("./Rstudio")
+library(TCGAbiolinks)
+paad <- "TCGA-PAAD"
+query.met.paad_prueba <- GDCquery(project = paad,
+                  legacy = TRUE,
+                  data.category = "DNA methylation",
+                  platform = "Illumina Human Methylation 450",
+                  sample.type = c("Primary Tumor", "Solid Tissue Normal"),
+                  barcode = barcodes_paad)
 
-|Files                                                                         |
-|:-----------------------------------------------------------------------------|
-|jhu-usc.edu_COAD.HumanMethylation450.1.lvl-3.TCGA-A6-2671-01A-01D-1407-05.txt |
-|jhu-usc.edu_COAD.HumanMethylation450.1.lvl-3.TCGA-A6-2671-11A-01D-1551-05.txt |
-|jhu-usc.edu_COAD.HumanMethylation450.1.lvl-3.TCGA-A6-2679-01A-02D-1407-05.txt |
-|jhu-usc.edu_COAD.HumanMethylation450.1.lvl-3.TCGA-A6-2679-11A-01D-1551-05.txt |
-|jhu-usc.edu_COAD.HumanMethylation450.1.lvl-3.TCGA-A6-2680-01A-01D-1407-05.txt |
-|jhu-usc.edu_COAD.HumanMethylation450.1.lvl-3.TCGA-A6-2680-11A-01D-1551-05.txt |
-|jhu-usc.edu_COAD.HumanMethylation450.1.lvl-3.TCGA-A6-2681-01A-01D-1407-05.txt |
-|jhu-usc.edu_COAD.HumanMethylation450.1.lvl-3.TCGA-A6-2681-11A-01D-1551-05.txt |
-|jhu-usc.edu_COAD.HumanMethylation450.1.lvl-3.TCGA-A6-2682-01A-01D-1407-05.txt |
-|jhu-usc.edu_COAD.HumanMethylation450.1.lvl-3.TCGA-A6-2682-11A-01D-1551-05.txt |
- Show Traceback
-Error in GDCquery(project = "TCGA-COAD", legacy = TRUE, data.category = "DNA methylation", : We were not able to filter using this file type. Examples of available files are above. Please check the vignette for possible entries
+GDCdownload(query.met.paad_prueba)
 
+```
+```{r Descarga PAAD}
+setwd("./Rstudio")
+library(TCGAbiolinks)
+lihc <- "TCGA-LIHC"
+query.met.lihc_prueba <- GDCquery(project = lihc,
+                  legacy = TRUE,
+                  data.category = "DNA methylation",
+                  platform = "Illumina Human Methylation 450",
+                  sample.type = c("Primary Tumor", "Solid Tissue Normal"),
+                  barcode = barcodes_LIHC)
 
+GDCdownload(query.met.lihc_prueba)
+
+```
+```{r Descarga PAAD}
+setwd("./Rstudio")
+library(TCGAbiolinks)
+luad <- "TCGA-LUAD"
+query.met.luad_prueba <- GDCquery(project = luad,
+                  legacy = TRUE,
+                  data.category = "DNA methylation",
+                  platform = "Illumina Human Methylation 450",
+                  sample.type = c("Primary Tumor", "Solid Tissue Normal"),
+                  barcode = barcodes_LUAD)
+
+GDCdownload(query.met.luad_prueba)
+
+```
