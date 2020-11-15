@@ -1,3 +1,7 @@
+#############################################################
+############## SELECCIÓN DE MUESTRAS N Y T COAD #############
+#############################################################
+
 ### SELECCIÓN DE MUESTRAS N Y T COAD ###
 
 ```{r COAD} 
@@ -6,7 +10,7 @@ setwd("./Rstudio")
 library(GenomicDataCommons)
 library(dplyr)
 
-#Filtramos muestras de metilacion de tejido normal
+##Filtramos muestras de metilacion de tejido normal
 nl_met_files_COAD = files() %>%
     GenomicDataCommons::filter(~cases.samples.sample_type=='Solid Tissue Normal' &
                cases.project.project_id == 'TCGA-COAD' &
@@ -207,18 +211,21 @@ PAAD
 
 ```{r seleccion barcodes}
 #install.packages("tidyverse")
-library(tidyverse)
 barcodes_paad <- str_sub(matched_tn_met_file_info_PAAD$file_name, 46, 64)
 barcodes_paad
+write.table(barcodes_paad, file = "barcodes_paad.txt", sep = ",", col.names = FALSE, row.names = FALSE, quote = F)
 
 barcodes_coad <- str_sub(matched_tn_met_file_info_COAD$file_name, 46, 64)
 barcodes_coad
+write.table(barcodes_coad, file = "barcodes_coad.txt", sep = ",", col.names = FALSE, row.names = FALSE, quote = F)
 
 barcodes_LIHC <- str_sub(matched_tn_met_file_info_LIHC$file_name, 46, 64)
 barcodes_LIHC
+write.table(barcodes_LIHC, file = "barcodes_lihc.txt", sep = "\t", col.names = FALSE, row.names = FALSE, quote = F)
 
 barcodes_LUAD <- str_sub(matched_tn_met_file_info_LUAD$file_name, 46, 64)
 barcodes_LUAD
+write.table(barcodes_LUAD, file = "barcodes_luad.txt", sep = "\t", col.names = FALSE, row.names = FALSE, quote = F)
 ```
 
 ### DESCARGA DE DATOS A PARTIR DE LOS BARCODES ###
@@ -278,5 +285,26 @@ query.met.luad_prueba <- GDCquery(project = luad,
                   barcode = barcodes_LUAD)
 
 GDCdownload(query.met.luad_prueba)
+
+```
+
+### GUARDAMOS LOS DATOS DESCARGADOS ###
+
+```{r Guardamos los datos en archivos RDS}
+saveRDS(object = coad_data,
+        file = "coad_data.RDS",
+        compress = FALSE)
+
+saveRDS(object = paad_data,
+        file = "paad_data.RDS",
+        compress = FALSE)
+
+saveRDS(object = lihc_data,
+        file = "lihc_data.RDS",
+        compress = FALSE)
+
+saveRDS(object = luad_data,
+        file = "luad_data.RDS",
+        compress = FALSE)
 
 ```
