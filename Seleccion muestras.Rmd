@@ -1,11 +1,11 @@
 ---
-title: "Selección Muestras"
+title: "SelecciÃ³n Muestras"
 author: "Ana Diez Borge"
 date: "31 de octubre de 2020"
 output: html_document
 ---
 
-```{r Cargamos datos}
+```{r Carga de datos}
 setwd("~/Master UOC - Bioinfo y bioestadistica/TFM/Rstudio")
 coad_data = readRDS(file = "coad_data.RDS")
 lihc_data = readRDS(file = "lihc_data.RDS")
@@ -29,7 +29,7 @@ table(is.na(coad_repe$TCGA.A6.2684.01C.08D.A27A.05))
 table(is.na(coad_repe$TCGA.A6.2684.01A.01D.1407.05))
 #Las muestras 01A y 01C se corresponden con muestras de tumor, 11A con muestra de tejido normal
 #De las muestras tumorales nos quedamos con la que tenga menos NA
-#TCGA.A6.2684.01A.01D.A27A.05 y TCGA.A6.2684.01C.08D.A27A.05 tienen la misma información, elijo la primera (TCGA.A6.2684.01A.01D.A27A.05), ya que la letra "A" y "c" indican el Orden de la muestra en una secuencia de muestras, siendo A el primer vial y C el tercero. Debido a que le resto de muestras son 01A y para evitar posibles efectos por lote, selecciono como muestra tumoral "TCGA.A6.2684.01A.01D.A27A.05"
+#TCGA.A6.2684.01A.01D.A27A.05 y TCGA.A6.2684.01C.08D.A27A.05 tienen la misma informaciÃ³n, elijo la primera (TCGA.A6.2684.01A.01D.A27A.05), ya que la letra "A" y "c" indican el Orden de la muestra en una secuencia de muestras, siendo A el primer vial y C el tercero. Debido a que le resto de muestras son 01A y para evitar posibles efectos por lote, selecciono como muestra tumoral "TCGA.A6.2684.01A.01D.A27A.05"
 cols.coad.delete <- c("TCGA.A6.2684.01C.08D.A27A.05", "TCGA.A6.2684.01A.01D.1407.05")
 coad_met <- prueba_coad_met[, ! names(prueba_coad_met) %in% cols.coad.delete, drop = F]
 col.coad.ok <- colnames(coad_met)
