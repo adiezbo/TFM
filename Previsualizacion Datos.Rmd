@@ -1,0 +1,125 @@
+---
+title: "Previsualizacion Datos"
+author: "Ana Diez Borge"
+date: "13 de noviembre de 2020"
+output: html_document
+---
+
+```{r Cargamos datos de metilación}
+Data_dir <- "~/Master UOC - Bioinfo y bioestadistica/TFM/Rstudio"
+setwd(Data_dir)
+coad_met <- read_delim("coad_met.txt","\t", escape_double = FALSE, trim_ws = TRUE)
+luad_met <- read_delim("luad_met.txt","\t", escape_double = FALSE, trim_ws = TRUE)
+paad_met <- read_delim("paad_met.txt","\t", escape_double = FALSE, trim_ws = TRUE)
+lich_met <- read_delim("lich_met.txt","\t", escape_double = FALSE, trim_ws = TRUE)
+coad_data = readRDS(file = "coad_data.RDS")
+lihc_data = readRDS(file = "lihc_data.RDS")
+paad_data = readRDS(file = "paad_data.RDS")
+luad_data = readRDS(file = "luad_data.RDS")
+```
+
+##PREVISUALIZACION DE LOS DATOS##
+```{r}
+dim(coad_met)
+dim(luad_met)
+dim(paad_met)
+dim(lich_met)
+```
+
+###PREPROCESAMIENTO DE LOS DATOS
+```{r}
+#Eliminamos todos los NA
+coad_met <- na.omit(coad_met)
+table(is.na(coad_met))
+
+luad_met <- na.omit(luad_met)
+table(is.na(luad_met))
+
+paad_met <- na.omit(paad_met)
+table(is.na(paad_met))
+
+lihc_met <- na.omit(lihc_met)
+table(is.na(lihc_met))
+
+```
+
+```{r}
+prueba.coad <- subset(coad_data,subset = (rowSums(is.na(assay(coad_data))) == 0))
+prueba.lihc <- subset(lihc_data,subset = (rowSums(is.na(assay(lihc_data))) == 0))
+prueba.paad <- subset(paad_data,subset = (rowSums(is.na(assay(paad_data))) == 0))
+prueba.luad <- subset(luad_data,subset = (rowSums(is.na(assay(prueba.luad))) == 0))
+```
+
+```{r}
+dataDirectory <- "~/Master UOC - Bioinfo y bioestadistica/TFM/Rstudio"
+prueba.coad <- subset(prueba.coad,subset = !as.character(seqnames(prueba.coad)) %in% c("chrNA","chrX","chrY"))
+dim(prueba.coad)
+prueba.lihc <- subset(prueba.lihc,subset = !as.character(seqnames(prueba.lihc)) %in% c("chrNA","chrX","chrY"))
+dim(prueba.lihc)
+prueba.paad <- subset(prueba.paad,subset = !as.character(seqnames(prueba.paad)) %in% c("chrNA","chrX","chrY"))
+dim(prueba.paad)
+prueba.luad <- subset(luad_data,subset = !as.character(seqnames(luad_data)) %in% c("chrNA","chrX","chrY"))
+dim(prueba.luad)
+```
+
+```{r Previsualizacion de datos density plot}
+#install.packages("car")
+library(car)
+par(mfrow = c(2,2))
+densityPlot(assay(prueba.coad), legend = TRUE, main = "COAD beta-values")
+densityPlot(assay(prueba.lihc), legend = TRUE, main = "LIHC beta-values")
+densityPlot(assay(prueba.luad),legend = TRUE, main = "LUAD beta-values")
+densityPlot(assay(prueba.paad),legend = TRUE, main = "PAAD beta-values")
+```
+
+
+```{r qlots}
+#PAAD tejido canceroso y normal
+qplot(assay(prueba.paad)[ , grepl( "01A" , colnames( assay(prueba.paad) ) ) ] , fill=I(rgb(0.72, 0.201, 0.176,0.6)), main = "Tejido Tumoral PAAD", xlab = "Beta-values", ylab = "recuento", bins = 50, ylim = c(0, 50000))
+qplot(assay(prueba.paad)[ , grepl( "11A" , colnames( assay(prueba.paad) ) ) ] , fill=I(rgb(0.1,0.2,0.4,0.6)), main = "Tejido Normal PAAD", xlab = "Beta-values", ylab = "recuento", bins = 50, ylim = c(0, 50000))
+
+#LUAD tejido canceroso y normal
+qplot(assay(prueba.luad)[ , grepl( "01A" , colnames( assay(prueba.luad) ) ) ] , fill=I(rgb(0.72, 0.201, 0.176,0.6)), main = "Tejido Tumoral LUAD", xlab = "Beta-values", ylab = "recuento", bins = 50, ylim = c(0, 50000))
+qplot(assay(prueba.luad)[ , grepl( "11A" , colnames( assay(prueba.luad) ) ) ] , fill=I(rgb(0.1,0.2,0.4,0.6)), main = "Tejido Normal LUAD", xlab = "Beta-values", ylab = "recuento", bins = 50, ylim = c(0, 50000))
+
+
+#LIHC tejido canceroso y normal
+qplot(assay(prueba.lihc)[ , grepl( "01A" , colnames( assay(prueba.lihc) ) ) ] , fill=I(rgb(0.72, 0.201, 0.176,0.6)), main = "Tejido Tumoral LIHC", xlab = "Beta-values", ylab = "recuento", bins = 50, ylim = c(0, 50000))
+qplot(assay(prueba.lihc)[ , grepl( "11A", colnames( assay(prueba.lihc) ) ) ] , fill=I(rgb(0.1,0.2,0.4,0.6)), main = "Tejido Normal LIHC", xlab = "Beta-values", ylab = "recuento", bins = 50, ylim = c(0, 50000))
+
+#COAD tejido canceroso y normal
+qplot(assay(prueba.coad)[ , grepl( "01A" , colnames( assay(prueba.coad) ) ) ] , fill=I(rgb(0.72, 0.201, 0.176,0.6)), main = "Tejido Tumoral COAD", xlab = "Beta-values", ylab = "recuento", bins = 50)
+
+qplot(assay(prueba.coad)[ , grepl( "11A" , colnames( assay(prueba.coad) ) ) ] , fill=I(rgb(0.1,0.2,0.4,0.6)), main = "Tejido Normal COAD", xlab = "Beta-values", ylab= "recuento", bins = 50 )
+
+
+```
+
+```{r Diferencias entre medias de metilacion}
+library(TCGAbiolinks)
+setwd(Data_dir)
+TCGAvisualize_meanMethylation(prueba.paad,
+                              groupCol = "definition",
+                              group.legend = "Groups",
+                              print.pvalue = TRUE,
+                              filename = 'methylationMean_PAAD_norm-tum.pdf')
+
+TCGAvisualize_meanMethylation(prueba.lihc,
+                              groupCol = "definition",
+                              group.legend = "Groups",
+                              print.pvalue = TRUE,
+                              filename = 'methylationMean_LIHC_norm-tum.pdf')
+
+TCGAvisualize_meanMethylation(prueba.luad,
+                              groupCol = "definition",
+                              group.legend = "Groups",
+                              print.pvalue = TRUE,
+                              filename = 'methylationMean_LUAD_norm-tum.pdf')
+
+TCGAvisualize_meanMethylation(prueba.coad,
+                              groupCol = "definition",
+                              group.legend = "Groups",
+                              print.pvalue = TRUE,
+                              filename = 'methylationMean_COAD_norm-tum.pdf')
+```
+
