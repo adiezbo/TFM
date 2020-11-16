@@ -1,0 +1,107 @@
+---
+title: "Selección Muestras"
+author: "Ana Diez Borge"
+date: "31 de octubre de 2020"
+output: html_document
+---
+
+```{r Cargamos datos}
+setwd("~/Master UOC - Bioinfo y bioestadistica/TFM/Rstudio")
+coad_data = readRDS(file = "coad_data.RDS")
+lihc_data = readRDS(file = "lihc_data.RDS")
+paad_data = readRDS(file = "paad_data.RDS")
+luad_data = readRDS(file = "luad_data.RDS")
+#barcodes_coad <- as.character(read_csv("barcodes_coad.txt"))
+#barcodes_lihc <- read_csv("barcodes_lihc.txt")
+#barcodes_paad <- read_csv("barcodes_paad.txt")
+#barcodes_luad <- read_csv("barcodes_luad.txt")
+```
+
+```{r seleccion muestras coad coad}
+#Creo un data frame para buscar muestras repetidas
+df_coad_met <- as.data.frame(assays(coad_data)@listData)
+table(strtrim(barcodes_coad, 12), substr(barcodes_coad, 14,16))
+coad_repe <- df_coad_met[c("TCGA.A62684.11A.01D.1551.05", "TCGA.A6.2684.01A.01D.A27A.05", "TCGA.A6.2684.01C.08D.A27A.05","TCGA.A6.2684.01A.01D.1407.05")]
+#Se comprueba que muestra tiene mayor numero de NA
+table(is.na(coad_repe$TCGA.A6.2684.11A.01D.1551.05))
+table(is.na(coad_repe$TCGA.A6.2684.01A.01D.A27A.05))
+table(is.na(coad_repe$TCGA.A6.2684.01C.08D.A27A.05))
+table(is.na(coad_repe$TCGA.A6.2684.01A.01D.1407.05))
+#Las muestras 01A y 01C se corresponden con muestras de tumor, 11A con muestra de tejido normal
+#De las muestras tumorales nos quedamos con la que tenga menos NA
+#TCGA.A6.2684.01A.01D.A27A.05 y TCGA.A6.2684.01C.08D.A27A.05 tienen la misma información, elijo la primera (TCGA.A6.2684.01A.01D.A27A.05), ya que la letra "A" y "c" indican el Orden de la muestra en una secuencia de muestras, siendo A el primer vial y C el tercero. Debido a que le resto de muestras son 01A y para evitar posibles efectos por lote, selecciono como muestra tumoral "TCGA.A6.2684.01A.01D.A27A.05"
+dim(coad_data)
+library(IlluminaHumanMethylation450kanno.ilmn12.hg19)
+
+#Se eliminan las columnas que no son de interés
+cols.coad.delete <-c("TCGA-A6-2684-01C-08D-A27A-05", "TCGA-A6-2684-01A-01D-1407-05")
+cols.coad.ok <- setdiff(colnames(coad_data), cols.coad.delete)
+coad_data <- coad_data[, cols.coad.ok]
+
+#Comprobación de que se han eliminado las columnas
+dim(coad_data)
+```
+
+
+```{r seleccion muestras lihc}
+df_lihc_met <- as.data.frame(assays(lihc_data)@listData)
+table(strtrim(barcodes_LIHC, 12), substr(barcodes_LIHC, 14,16))
+#No hay muestras repetidas y por lo tanto no hay que eliminar ninguna columna
+```
+
+```{r seleccion muestras luad}
+df_luad_met <- as.data.frame(assays(luad_data)@listData)
+table(strtrim(barcodes_LUAD, 12), substr(barcodes_LUAD, 14,16))
+luad_repe <- df_luad_met[c("TCGA.44.2656.01B.06D.A276.05", "TCGA.44.2656.01A.02D.A276.05", "TCGA.44.5645.01B.04D.A276.05","TCGA.44.5645.01A.01D.1626.05", "TCGA.44.5645.01A.01D.A276.05", "TCGA.44.2665.01B.06D.A276.05", "TCGA.44.2665.01A.01D.A276.05", "TCGA.44.2668.01B.02D.A276.05", "TCGA.44.2668.01A.01D.A276.05", "TCGA.44.6146.01B.04D.A276.05","TCGA.44.6146.01A.11D.A276.05", "TCGA.44.6146.01A.11D.1756.05", "TCGA.44.6147.01B.06D.A276.05", "TCGA.44.6147.01A.11D.1756.05", "TCGA.44.6147.01A.11D.A276.05")]
+
+table(is.na(luad_repe$TCGA.44.2656.01B.06D.A276.05))
+table(is.na(luad_repe$TCGA.44.2656.01A.02D.A276.05))
+table(is.na(luad_repe$TCGA.44.5645.01B.04D.A276.05))
+table(is.na(luad_repe$TCGA.44.5645.01A.01D.1626.05))
+table(is.na(luad_repe$TCGA.44.5645.01A.01D.A276.05))
+table(is.na(luad_repe$TCGA.44.2665.01B.06D.A276.05))
+table(is.na(luad_repe$TCGA.44.2665.01A.01D.A276.05))
+table(is.na(luad_repe$TCGA.44.2668.01B.02D.A276.05))
+table(is.na(luad_repe$TCGA.44.2668.01A.01D.A276.05))
+table(is.na(luad_repe$TCGA.44.6146.01B.04D.A276.05))
+table(is.na(luad_repe$TCGA.44.6146.01A.11D.A276.05))
+table(is.na(luad_repe$TCGA.44.6146.01A.11D.1756.05))
+table(is.na(luad_repe$TCGA.44.6147.01B.06D.A276.05))
+table(is.na(luad_repe$TCGA.44.6147.01A.11D.1756.05))
+table(is.na(luad_repe$TCGA.44.6147.01A.11D.A276.05))
+
+dim(luad_data)
+cols.luad.delete <- c("TCGA-44-2656-01B-06D-A276-05", "TCGA-44-5645-01A-01D-1626-05", "TCGA-44-5645-01B-04D-A276-05","TCGA-44-2665-01B-06D-A276-05", "TCGA-44-2668-01B-02D-A276-05", "TCGA-44-6146-01B-04D-A276-05", "TCGA-44-6146-01A-11D-1756-05", "TCGA-44-6147-01B-06D-A276-05", "TCGA-44-6147-01A-11D-A276-05")
+cols.luad.ok <- setdiff(colnames(luad_data), cols.luad.delete)
+luad_data <- luad_data[, cols.luad.ok]
+dim(luad_data)
+```
+
+
+```{r muestras duplicadas paad}
+table(strtrim(barcodes_paad, 12), substr(barcodes_paad, 14,16))
+```
+
+```{r Guardamos los datos actualizados sin las muestras repetidas}
+Data_dir <- "~/Master UOC - Bioinfo y bioestadistica/TFM/Rstudio"
+setwd(Data_dir)
+saveRDS(object = coad_data,
+        file = "coad_data.RDS",
+        compress = FALSE)
+
+saveRDS(object = paad_data,
+        file = "paad_data.RDS",
+        compress = FALSE)
+
+saveRDS(object = lihc_data,
+        file = "lihc_data.RDS",
+        compress = FALSE)
+
+saveRDS(object = luad_data,
+        file = "luad_data.RDS",
+        compress = FALSE)
+
+```
+
+
+
