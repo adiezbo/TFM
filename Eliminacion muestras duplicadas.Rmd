@@ -1,5 +1,5 @@
 ---
-title: "Selección Muestras"
+title: "SelecciÃ³n Muestras"
 author: "Ana Diez Borge"
 date: "31 de octubre de 2020"
 output: html_document
@@ -17,7 +17,7 @@ luad_data = readRDS(file = "luad_data.RDS")
 #barcodes_luad <- read_csv("barcodes_luad.txt")
 ```
 
-```{r seleccion muestras coad coad}
+```{r seleccion muestras coad}
 #Creo un data frame para buscar muestras repetidas
 df_coad_met <- as.data.frame(assays(coad_data)@listData)
 table(strtrim(barcodes_coad, 12), substr(barcodes_coad, 14,16))
@@ -29,16 +29,16 @@ table(is.na(coad_repe$TCGA.A6.2684.01C.08D.A27A.05))
 table(is.na(coad_repe$TCGA.A6.2684.01A.01D.1407.05))
 #Las muestras 01A y 01C se corresponden con muestras de tumor, 11A con muestra de tejido normal
 #De las muestras tumorales nos quedamos con la que tenga menos NA
-#TCGA.A6.2684.01A.01D.A27A.05 y TCGA.A6.2684.01C.08D.A27A.05 tienen la misma información, elijo la primera (TCGA.A6.2684.01A.01D.A27A.05), ya que la letra "A" y "c" indican el Orden de la muestra en una secuencia de muestras, siendo A el primer vial y C el tercero. Debido a que le resto de muestras son 01A y para evitar posibles efectos por lote, selecciono como muestra tumoral "TCGA.A6.2684.01A.01D.A27A.05"
+#TCGA.A6.2684.01A.01D.A27A.05 y TCGA.A6.2684.01C.08D.A27A.05 tienen la misma informaciÃ³n, elijo la primera (TCGA.A6.2684.01A.01D.A27A.05), ya que la letra "A" y "c" indican el Orden de la muestra en una secuencia de muestras, siendo A el primer vial y C el tercero. Debido a que le resto de muestras son 01A y para evitar posibles efectos por lote, selecciono como muestra tumoral "TCGA.A6.2684.01A.01D.A27A.05"
 dim(coad_data)
 library(IlluminaHumanMethylation450kanno.ilmn12.hg19)
 
-#Se eliminan las columnas que no son de interés
+#Se eliminan las columnas que no son de interÃ©s
 cols.coad.delete <-c("TCGA-A6-2684-01C-08D-A27A-05", "TCGA-A6-2684-01A-01D-1407-05")
 cols.coad.ok <- setdiff(colnames(coad_data), cols.coad.delete)
 coad_data <- coad_data[, cols.coad.ok]
 
-#Comprobación de que se han eliminado las columnas
+#ComprobaciÃ³n de que se han eliminado las columnas
 dim(coad_data)
 ```
 
