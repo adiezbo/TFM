@@ -13,7 +13,7 @@ output:
     code_download: true
 ---
 
-### SELECCIÓN DE MUESTRAS N Y T COAD ###
+### SELECCIÃ“N DE MUESTRAS N Y T COAD ###
 
 ```{r COAD} 
 setwd("./Rstudio")
@@ -62,7 +62,7 @@ muestras_COAD = data.frame(lapply(matched_tn_met_file_info_COAD, as.character), 
 write.table(muestras_COAD, file = "muestras_COAD.txt", sep = "\t", col.names = TRUE, row.names = TRUE, quote = F)
 ```
 
-### SELECCIÓN DE MUESTRAS N Y T LIHC ###
+### SELECCIÃ“N DE MUESTRAS N Y T LIHC ###
 
 ```{r LIHC} 
 setwd("./Rstudio")
@@ -109,7 +109,7 @@ muestras_LIHC = data.frame(lapply(matched_tn_met_file_info_LIHC, as.character), 
 write.table(muestras_LIHC, file = "muestras_LIHC.txt", sep = "\t", col.names = TRUE, row.names = TRUE, quote = F)
 ```
 
-### SELECCIÓN DE MUESTRAS N Y T LUAD ###
+### SELECCIÃ“N DE MUESTRAS N Y T LUAD ###
 
 ```{r LUAD} 
 setwd("./Rstudio")
@@ -156,7 +156,7 @@ muestras_LUAD = data.frame(lapply(matched_tn_met_file_info_LUAD, as.character), 
 write.table(muestras_LUAD, file = "muestras_LUAD.txt", sep = "\t", col.names = TRUE, row.names = TRUE, quote = F)
 ```
 
-### SELECCIÓN DE MUESTRAS N Y T PAAD ###
+### SELECCIÃ“N DE MUESTRAS N Y T PAAD ###
 
 ```{r PAAD} 
 setwd("./Rstudio")
