@@ -1,0 +1,133 @@
+---
+title: "Identificación de Regiones Diferencialmente Metiladas(DMR)"
+author: "Ana Diez Borge"
+date: "1 de diciembre de 2020"
+output: html_document
+---
+
+## ESTUDIO DE LOS DATOS NORMALIZADOS Y SIN NORMALIZAR
+
+```{r Cargamos datos de metilación}
+Data_dir <- "~/Master UOC - Bioinfo y bioestadistica/TFM/Rstudio"
+Results_dir <- "~/Master UOC - Bioinfo y bioestadistica/TFM/Rstudio/Results"
+setwd(Data_dir)
+coad_data = readRDS(file = "coad_data.RDS")
+lihc_data = readRDS(file = "lihc_data.RDS")
+paad_data = readRDS(file = "paad_data.RDS")
+luad_data = readRDS(file = "luad_data.RDS")
+```
+
+```{r DMR PAAD}
+setwd(Results_dir)
+library(TCGAbiolinks)
+library(ggplot2)
+met.coad <- TCGAanalyze_DMC(paad_data,
+                groupCol = "definition", 
+                group1 = "Primary solid Tumor",
+                group2= "Solid Tissue Normal", 
+                p.cut = 0.01,
+                diffmean.cut = 0.25,
+                legend = "State",
+                plot.filename = "metvolcano_PAAD.png",
+                cores = 1)
+```
+
+```{r DMR PAAD normalizado}
+setwd(Results_dir)
+library(TCGAbiolinks)
+paad_norm_DMR <- TCGAanalyze_DMC(paad_data_norm,
+                groupCol = "definition", 
+                group1 = "Primary solid Tumor",
+                group2= "Solid Tissue Normal", 
+                p.cut = 0.01,
+                diffmean.cut = 0.25,
+                legend = "State",
+                plot.filename = "metvolcano_PAAD_norm.png",
+                cores = 1)
+```
+
+```{r DMR lihc}
+Results_dir <- "~/Master UOC - Bioinfo y bioestadistica/TFM/Rstudio/Results"
+setwd(Results_dir)
+library(TCGAbiolinks)
+lihc_DMR <- TCGAanalyze_DMC(lihc_data,
+                groupCol = "definition", 
+                group1 = "Primary solid Tumor",
+                group2= "Solid Tissue Normal", 
+                p.cut = 0.01,
+                diffmean.cut = 0.25,
+                legend = "State",
+                plot.filename = "metvolcano_lihc.png",
+                cores = 1)
+```
+
+```{r DMR lihc normalizado}
+setwd(Results_dir)
+library(TCGAbiolinks)
+lihc_norm_DMR <- TCGAanalyze_DMC(lihc_data_norm,
+                groupCol = "definition", 
+                group1 = "Primary solid Tumor",
+                group2= "Solid Tissue Normal", 
+                p.cut = 0.01,
+                diffmean.cut = 0.25,
+                legend = "State",
+                plot.filename = "metvolcano_lihc_norm.png",
+                cores = 1)
+```
+
+```{r DMR coad}
+setwd(Results_dir)
+library(TCGAbiolinks)
+coad_DMR <- TCGAanalyze_DMC(coad_data,
+                groupCol = "definition", 
+                group1 = "Primary solid Tumor",
+                group2= "Solid Tissue Normal", 
+                p.cut = 0.01,
+                diffmean.cut = 0.25,
+                legend = "State",
+                plot.filename = "metvolcano_coad.png",
+                cores = 1)
+```
+
+
+```{r DMR coad normalizado}
+setwd(Results_dir)
+library(TCGAbiolinks)
+coad_norm_DMR <- TCGAanalyze_DMC(coad_data_norm,
+                groupCol = "definition", 
+                group1 = "Primary solid Tumor",
+                group2= "Solid Tissue Normal", 
+                p.cut = 0.01,
+                diffmean.cut = 0.25,
+                legend = "State",
+                plot.filename = "metvolcano_coad_norm.png",
+                cores = 1)
+```
+
+```{r DMR luad}
+setwd(Results_dir)
+library(TCGAbiolinks)
+luad_DMR <- TCGAanalyze_DMC(luad_data,
+                groupCol = "definition", 
+                group1 = "Primary solid Tumor",
+                group2= "Solid Tissue Normal", 
+                p.cut = 0.01,
+                diffmean.cut = 0.25,
+                legend = "State",
+                plot.filename = "metvolcano_luad.png",
+                cores = 1)
+```
+
+```{r DMR luad normalizado}
+setwd(Results_dir)
+library(TCGAbiolinks)
+luad_norm_DMR <- TCGAanalyze_DMC(luad_data_norm,
+                groupCol = "definition", 
+                group1 = "Primary solid Tumor",
+                group2= "Solid Tissue Normal", 
+                p.cut = 0.01,
+                diffmean.cut = 0.25,
+                legend = "State",
+                plot.filename = "metvolcano_luad_norm.png",
+                cores = 1)
+```

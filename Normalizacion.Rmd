@@ -1,0 +1,215 @@
+---
+title: "Normalizacion"
+author: "Ana Diez Borge"
+date: "20 de noviembre de 2020"
+output: html_document
+---
+
+```{r}
+library(minfi)
+library(minfiData)
+library(sva)
+library(devtools)
+library(wateRmelon)
+#write.csv(assay(paad_data),'paad_data_2.csv')
+```
+
+```{r quantile normalization }
+#assay(paad_data) = betaqn(assay(paad_data))
+assay(coad_data) = betaqn(assay(coad_data))
+assay(lihc_data) = betaqn(assay(lihc_data))
+assay(luad_data) = betaqn(assay(luad_data))
+```
+
+```{r Guardamos los datos normalizados en archivos RDS}
+setwd(Data_dir)
+saveRDS(object = coad_data,
+        file = "coad_data_norm.RDS",
+        compress = FALSE)
+
+saveRDS(object = paad_data,
+        file = "paad_data_norm.RDS",
+        compress = FALSE)
+
+saveRDS(object = lihc_data,
+        file = "lihc_data_norm.RDS",
+        compress = FALSE)
+
+saveRDS(object = luad_data,
+        file = "luad_data_norm.RDS",
+        compress = FALSE)
+
+```
+
+```{r}
+Data_dir <- "~/Master UOC - Bioinfo y bioestadistica/TFM/Rstudio"
+setwd(Data_dir)
+coad_data_norm = readRDS(file = "coad_data_norm.RDS")
+lihc_data_norm = readRDS(file = "lihc_data_norm.RDS")
+paad_data_norm = readRDS(file = "paad_data_norm.RDS")
+luad_data_norm = readRDS(file = "luad_data_norm.RDS")
+```
+
+```{r}
+library(car)
+par(mfrow = c(2,2))
+densityPlot(assay(paad_data_norm),legend = TRUE, main = "PAAD beta-values norm")
+densityPlot(assay(coad_data_norm), legend = TRUE, main = "COAD beta-values norm")
+densityPlot(assay(lihc_data_norm), legend = TRUE, main = "LIHC beta-values norm")
+densityPlot(assay(luad_data_norm),legend = TRUE, main = "LUAD beta-values norm")
+```
+
+```{r qlots}
+library(ggplot2)
+#PAAD tejido canceroso y normal
+qplot(assay(paad_data_norm)[ , grepl( "01A" , colnames( assay(paad_data_norm) ) ) ] , fill=I(rgb(0.72, 0.201, 0.176,0.6)), main = "Tejido Tumoral PAAD norm", xlab = "Beta-values", ylab = "Count", bins = 50)
+qplot(assay(paad_data_norm)[ , grepl( "11A" , colnames( assay(paad_data_norm) ) ) ] , fill=I(rgb(0.1,0.2,0.4,0.6)), main = "Tejido Normal PAAD norm", xlab = "Beta-values", ylab = "Count", bins = 50)
+
+#LUAD tejido canceroso y normal
+qplot(assay(luad_data_norm)[ , grepl( "01A" , colnames( assay(luad_data_norm) ) ) ] , fill=I(rgb(0.72, 0.201, 0.176,0.6)), main = "Tejido Tumoral LUAD norm", xlab = "Beta-values", ylab = "Count", bins = 50)
+
+qplot(assay(luad_data_norm)[ , grepl( "11A" , colnames( assay(luad_data_norm) ) ) ] , fill=I(rgb(0.1,0.2,0.4,0.6)), main = "Tejido Normal LUAD norm", xlab = "Beta-values", ylab= "Count", bins = 50 )
+
+
+#LIHC tejido canceroso y normal
+qplot(assay(lihc_data_norm)[ , grepl( "01A" , colnames( assay(lihc_data_norm) ) ) ] , fill=I(rgb(0.72, 0.201, 0.176,0.6)), main = "Tejido Tumoral LIHC norm", xlab = "Beta-values", ylab = "Count", bins = 50)
+
+qplot(assay(lihc_data_norm)[ , grepl( "11A" , colnames( assay(lihc_data_norm) ) ) ] , fill=I(rgb(0.1,0.2,0.4,0.6)), main = "Tejido Normal LIHC norm", xlab = "Beta-values", ylab= "Count", bins = 50 )
+
+#COAD tejido canceroso y normal
+qplot(assay(coad_data_norm)[ , grepl( "01A" , colnames( assay(coad_data_norm) ) ) ] , fill=I(rgb(0.72, 0.201, 0.176,0.6)), main = "Tejido Tumoral COAD norm", xlab = "Beta-values", ylab = "Count", bins = 50)
+
+qplot(assay(coad_data_norm)[ , grepl( "11A" , colnames( assay(coad_data_norm) ) ) ] , fill=I(rgb(0.1,0.2,0.4,0.6)), main = "Tejido Normal COAD norm", xlab = "Beta-values", ylab= "Count", bins = 50 )
+
+```
+
+```{r Diferencias entre medias de metilacion Norm-Tum}
+library(TCGAbiolinks)
+setwd(Data_dir)
+TCGAvisualize_meanMethylation(paad_data_norm,
+                              groupCol = "definition",
+                              group.legend = "Groups",
+                              title = "Mean DNA methylation PAAD",
+                              print.pvalue = TRUE,
+                              filename = 'methylationMean_PAAD_norm-tum_norm.png')
+
+TCGAvisualize_meanMethylation(lihc_data_norm,
+                              groupCol = "definition",
+                              group.legend = "Groups",
+                              title = "Mean DNA methylation LIHC",
+                              print.pvalue = TRUE,
+                              filename = 'methylationMean_LIHC_norm-tum_norm.png')
+
+TCGAvisualize_meanMethylation(luad_data_norm,
+                              groupCol = "definition",
+                              group.legend = "Groups",
+                              title = "Mean DNA methylation LUAD",
+                              print.pvalue = TRUE,
+                              filename = 'methylationMean_LUAD_norm-tum_norm.png')
+
+TCGAvisualize_meanMethylation(coad_data_norm,
+                              groupCol = "definition",
+                              group.legend = "Groups",
+                              title = "Mean DNA methylation COAD",
+                              print.pvalue = TRUE,
+                              filename = 'methylationMean_COAD_norm-tum_norm.png')
+```
+
+```{r}
+library(TCGAbiolinks)
+setwd(Data_dir)
+#Separamos los datos en función del género del paciente
+
+#PAAD
+TCGAvisualize_meanMethylation(paad_data_norm[paad_data_norm$gender == "male"],
+                              groupCol = "definition",
+                              group.legend = "Groups",
+                              print.pvalue = TRUE,
+                              title = "Mean DNA methylation PAAD Male",
+                              filename = 'methylationMean_PAAD_male_norm-tum_norm.png')
+
+TCGAvisualize_meanMethylation(paad_data_norm[paad_data_norm$gender == "female"],
+                              groupCol = "definition",
+                              group.legend = "Groups",
+                              print.pvalue = TRUE,
+                              title = "Mean DNA methylation PAAD Female",
+                              filename = 'methylationMean_PAAD_female_norm-tum_norm.png')
+
+#LIHC
+TCGAvisualize_meanMethylation(lihc_data_norm[lihc_data_norm$gender == "male"],
+                              groupCol = "definition",
+                              group.legend = "Groups",
+                              print.pvalue = TRUE,
+                              title = "Mean DNA methylation LIHC Male",
+                              filename = 'methylationMean_LIHC_male_norm-tum_norm.png')
+
+TCGAvisualize_meanMethylation(lihc_data_norm[lihc_data_norm$gender == "female"],
+                              groupCol = "definition",
+                              group.legend = "Groups",
+                              print.pvalue = TRUE,
+                              title = "Mean DNA methylation LIHC Female",
+                              filename = 'methylationMean_LIHC_female_norm-tum_norm.png')
+
+#LUAD
+TCGAvisualize_meanMethylation(luad_data_norm[luad_data_norm$gender == "male"],
+                              groupCol = "definition",
+                              group.legend = "Groups",
+                              print.pvalue = TRUE,
+                              title = "Mean DNA methylation LUAD Male",
+                              filename = 'methylationMean_LUAD_male_norm-tum_norm_norm.png')
+
+TCGAvisualize_meanMethylation(luad_data_norm[luad_data_norm$gender == "female"],
+                              groupCol = "definition",
+                              group.legend = "Groups",
+                              print.pvalue = TRUE,
+                              title = "Mean DNA methylation LUAD Female",
+                              filename = 'methylationMean_LUAD_female_norm-tum_norm.png')
+
+#COAD
+TCGAvisualize_meanMethylation(coad_data_norm[coad_data_norm$gender == "male"],
+                              groupCol = "definition",
+                              group.legend = "Groups",
+                              print.pvalue = TRUE,
+                              title = "Mean DNA methylation COAD Male",
+                              filename = 'methylationMean_COAD_Male_norm-tum_norm.png')
+
+TCGAvisualize_meanMethylation(coad_data_norm[coad_data_norm$gender == "female"],
+                              groupCol = "definition",
+                              group.legend = "Groups",
+                              print.pvalue = TRUE,
+                              title = "Mean DNA methylation COAD Female",
+                              filename = 'methylationMean_COAD_female_norm-tum_norm.png')
+```
+
+```{r Diferencias entre medias de metilacion edad}
+Results_dir <- "~/Master UOC - Bioinfo y bioestadistica/TFM/Rstudio/Results"
+library(TCGAbiolinks)
+setwd(Results_dir)
+TCGAvisualize_meanMethylation(paad_data_norm,
+                              groupCol = "age_at_index",
+                              group.legend = "Groups",
+                              title = "Mean DNA methylation PAAD Norm",
+                              print.pvalue = TRUE,
+                              filename = 'methylationMean_PAAD_Edad_norm-tum_norm.png')
+
+TCGAvisualize_meanMethylation(lihc_data_norm,
+                              groupCol = "age_at_index",
+                              group.legend = "Groups",
+                              title = "Mean DNA methylation LIHC Norm",
+                              print.pvalue = TRUE,
+                              filename = 'methylationMean_LIHC_Edad_norm-tum_norm.png')
+
+TCGAvisualize_meanMethylation(luad_data_norm,
+                              groupCol = "age_at_index",
+                              group.legend = "Groups",
+                              title = "Mean DNA methylation LUAD Norm",
+                              print.pvalue = TRUE,
+                              filename = 'methylationMean_LUAD_Edad_norm-tum_norm.png')
+
+TCGAvisualize_meanMethylation(coad_data_norm,
+                              groupCol = "age_at_index",
+                              group.legend = "Groups",
+                              title = "Mean DNA methylation COAD Norm",
+                              print.pvalue = TRUE,
+                              filename = 'methylationMean_COAD_Edad_norm-tum_norm.png')
+```
