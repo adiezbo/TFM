@@ -1,5 +1,5 @@
 ---
-title: "Identificación de Regiones Diferencialmente Metiladas(DMR)"
+title: "IdentificaciÃ³n de Regiones Diferencialmente Metiladas(DMR)"
 author: "Ana Diez Borge"
 date: "1 de diciembre de 2020"
 output: html_document
@@ -7,7 +7,7 @@ output: html_document
 
 ## ESTUDIO DE LOS DATOS NORMALIZADOS Y SIN NORMALIZAR
 
-```{r Cargamos datos de metilación}
+```{r Cargamos datos de metilaciÃ³n}
 Data_dir <- "~/Master UOC - Bioinfo y bioestadistica/TFM/Rstudio"
 Results_dir <- "~/Master UOC - Bioinfo y bioestadistica/TFM/Rstudio/Results"
 setwd(Data_dir)
@@ -15,6 +15,11 @@ coad_data = readRDS(file = "coad_data.RDS")
 lihc_data = readRDS(file = "lihc_data.RDS")
 paad_data = readRDS(file = "paad_data.RDS")
 luad_data = readRDS(file = "luad_data.RDS")
+
+coad_data_norm = readRDS(file = "coad_data_norm.RDS")
+lihc_data_norm = readRDS(file = "lihc_data_norm.RDS")
+paad_data_norm = readRDS(file = "paad_data_norm.RDS")
+luad_data_norm = readRDS(file = "luad_data_norm.RDS")
 ```
 
 ```{r DMR PAAD}
