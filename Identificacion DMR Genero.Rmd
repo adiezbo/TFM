@@ -54,10 +54,17 @@ Your contrast returned 62 individually significant probes; a small but real effe
 
 ```{r}
 dmrcoutput_paad <- dmrcate(myannotation_paad, lambda=1000, C=2)
-dmrcoutput_paad
 dmrcoutput_lihc <- dmrcate(myannotation_lihc, lambda=1000, C=2)
 dmrcoutput_coad <- dmrcate(myannotation_coad, lambda=1000, C=2)
 dmrcoutput_luad <- dmrcate(myannotation_luad, lambda=1000, C=2)
+```
+
+```{r Results DMRs}
+results.ranges_paad <- extractRanges(dmrcoutput_paad, genome = "hg19")
+results.ranges_paad
+results.ranges_lihc <- extractRanges(dmrcoutput_lihc, genome = "hg19")
+results.ranges_coad <- extractRanges(dmrcoutput_coad, genome = "hg19")
+results.ranges_luad <- extractRanges(dmrcoutput_luad, genome = "hg19")
 ```
 GRanges object with 3 ranges and 8 metadata columns:
       seqnames              ranges strand |   no.cpgs min_smoothed_fdr
@@ -77,13 +84,6 @@ GRanges object with 3 ranges and 8 metadata columns:
   [3]                                      DIP2C
   -------
   seqinfo: 3 sequences from an unspecified genome; no seqlengths
-
-```{r}
-results.ranges_paad <- extractRanges(dmrcoutput_paad, genome = "hg19")
-results.ranges_lihc <- extractRanges(dmrcoutput_lihc, genome = "hg19")
-results.ranges_coad <- extractRanges(dmrcoutput_coad, genome = "hg19")
-results.ranges_luad <- extractRanges(dmrcoutput_luad, genome = "hg19")
-```
 
 ```{r DMR plot PAAD}
 library(DMRcate)
