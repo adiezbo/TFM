@@ -38,7 +38,7 @@ assay(coad_data_m) = coad_mvalues
 assay(luad_data_m) = luad_mvalues
 ```
 
-```{r Matriz modelo y diferencial PAAD}
+```{r Matriz modelo y contraste PAAD}
 #BiocManager::install("DMRcate")
 library(DMRcate)
 type_paad <- factor(paad_data$gender)
@@ -46,38 +46,60 @@ design_paad <- model.matrix(~type_paad)
 myannotation_paad <- cpg.annotate("array", assay(paad_data), arraytype = "450K",
 analysis.type="differential", design=design_paad, coef=2)
 ```
+Your contrast returned 19 individually significant probes; a small but real effect. Consider manually setting the value of pcutoff to return more DMRs, but be warned that doing this increases the risk of Type I errors.
 
-```{r Matriz modelo y diferencial LIHC}
+```{r Matriz modelo y contraste LIHC}
 library(DMRcate)
 type_lihc <- factor(lihc_data$gender)
 design_lihc <- model.matrix(~type_lihc)
 myannotation_lihc <- cpg.annotate("array", assay(lihc_data), arraytype = "450K",
 analysis.type="differential", design=design_lihc, coef=2)
 ```
+Your contrast returned 337 individually significant probes. We recommend the default setting of pcutoff in dmrcate().
 
-```{r Matriz modelo y diferencial COAD}
+```{r Matriz modelo y contraste COAD}
 library(DMRcate)
 type_coad <- factor(coad_data$gender)
 design_coad <- model.matrix(~type_coad)
 myannotation_coad <- cpg.annotate("array", assay(coad_data), arraytype = "450K",
 analysis.type="differential", design=design_coad, coef=2)
 ```
+Your contrast returned 108 individually significant probes. We recommend the default setting of pcutoff in dmrcate().
 
-```{r Matriz modelo y diferencial LUAD}
+```{r Matriz modelo y contraste LUAD}
 library(DMRcate)
 type_luad <- factor(luad_data$gender)
 design_luad <- model.matrix(~type_luad)
 myannotation_luad <- cpg.annotate("array", assay(luad_data), arraytype = "450K",
 analysis.type="differential", design=design_luad, coef=2)
 ```
+Your contrast returned 62 individually significant probes; a small but real effect. Consider manually setting the value of pcutoff to return more DMRs, but be warned that doing this increases the risk of Type I errors.
 
 ```{r}
 dmrcoutput_paad <- dmrcate(myannotation_paad, lambda=1000, C=2)
+dmrcoutput_paad
 dmrcoutput_lihc <- dmrcate(myannotation_lihc, lambda=1000, C=2)
 dmrcoutput_coad <- dmrcate(myannotation_coad, lambda=1000, C=2)
 dmrcoutput_luad <- dmrcate(myannotation_luad, lambda=1000, C=2)
 ```
-
+GRanges object with 3 ranges and 8 metadata columns:
+      seqnames              ranges strand |   no.cpgs min_smoothed_fdr
+         <Rle>           <IRanges>  <Rle> | <integer>        <numeric>
+  [1]    chr13 114239234-114239697      * |         2      3.15921e-35
+  [2]     chr2 208576002-208577105      * |        10      1.23196e-68
+  [3]    chr10       530836-531465      * |         6      1.93788e-21
+        Stouffer       HMFDR      Fisher   maxdiff   meandiff
+       <numeric>   <numeric>   <numeric> <numeric>  <numeric>
+  [1] 0.00353578 2.19064e-04 0.000543597 -0.148521 -0.0866364
+  [2] 1.00000000 1.83045e-06 0.054828307 -0.159696 -0.0145032
+  [3] 1.00000000 9.79207e-01 0.999999996  0.199757  0.1514052
+                               overlapping.genes
+                                     <character>
+  [1]                             SNORD36, TFDP1
+  [2] CCNYL1, SCARNA6, SNORD39, SNORA75, SNORA48
+  [3]                                      DIP2C
+  -------
+  seqinfo: 3 sequences from an unspecified genome; no seqlengths
 ```{r}
 results.ranges_paad <- extractRanges(dmrcoutput_paad, genome = "hg19")
 results.ranges_lihc <- extractRanges(dmrcoutput_lihc, genome = "hg19")
@@ -85,11 +107,39 @@ results.ranges_coad <- extractRanges(dmrcoutput_coad, genome = "hg19")
 results.ranges_luad <- extractRanges(dmrcoutput_luad, genome = "hg19")
 ```
 
-```{r}
+```{r DMR plot PAAD}
 library(DMRcate)
 groups <- c(female="magenta", male="forestgreen")
 cols_paad <- groups[as.character(type_paad)]
 DMR.plot(ranges=results.ranges_paad, dmr=1, CpGs=assay(paad_data), what="Beta",
 arraytype = "450K", phen.col=cols_paad, genome="hg19")
 ```
+Error in simpleLoess(y, x, w, span, degree = degree, parametric = FALSE, : NA/NaN/Inf in foreign function call (arg 1)
+
+```{r DMR plot lihc}
+groups_lihc <- c(male="magenta", female="forestgreen")
+cols_lihc <- groups[as.character(type_lihc)]
+cols_lihc
+DMR.plot(ranges=results.ranges_lihc, dmr=1, CpGs=assay(lihc_data), what="Beta",
+arraytype = "450K", phen.col=cols_lihc, genome="hg19")
+```
+Error in .local(GdObject, ...) : Too many stacks to draw. Either increase the device size or limit the drawing to a smaller region.
+
+```{r DMR plot coad}
+groups_coad <- c(male="magenta", female="forestgreen")
+cols_coad <- groups[as.character(type_coad)]
+cols_coad
+DMR.plot(ranges=results.ranges_coad, dmr=1, CpGs=assay(coad_data), what="Beta",
+arraytype = "450K", phen.col=cols_coad, genome="hg19")
+```
+Error in h(simpleError(msg, call)) : error in evaluating the argument 'y' in selecting a method for function 'setdiff': error in evaluating the argument 'x' in selecting a method for function 'resize': [[ subscript must be >= 1
+
+```{r DMR plot luad}
+groups_luad <- c(male="magenta", female="forestgreen")
+cols_luad <- groups[as.character(type_luad)]
+cols_luad
+DMR.plot(ranges=results.ranges_luad, dmr=1, CpGs=assay(luad_data), what="Beta",
+arraytype = "450K", phen.col=cols_luad, genome="hg19")
+```
+Error in simpleLoess(y, x, w, span, degree = degree, parametric = FALSE, : span is too small
 
