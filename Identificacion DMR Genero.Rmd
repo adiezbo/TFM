@@ -5,7 +5,7 @@ date: "7 de diciembre de 2020"
 output: html_document
 ---
 
-```{r Cargamos datos de metilación}
+```{r Cargamos datos de metilaciÃ³n}
 Data_dir <- "~/Master UOC - Bioinfo y bioestadistica/TFM/Rstudio"
 Results_dir <- "~/Master UOC - Bioinfo y bioestadistica/TFM/Rstudio/Results"
 setwd(Data_dir)
@@ -14,22 +14,6 @@ lihc_data = readRDS(file = "lihc_data.RDS")
 paad_data = readRDS(file = "paad_data.RDS")
 luad_data = readRDS(file = "luad_data.RDS")
 ```
-
-```{r filtrado de muestras}
-#Las sondas que están a 0, 1 o 2 nucleótidos de la metilcitosina de interés muestran una distribución marcadamente diferente a las más lejanas en el tejido sano. Por esto, para evitar la confusión se eliminan las sondas que estan a una distancia de 2 nucleotidos o menos de una CpG cuya frecuencia alélica menor sea igual a 0.05
-library(DMRcate)
-nrow(assay(paad_data))
-paad_data_noSNPs <- paad_data
-paad_data.noSNPs <- rmSNPandCH(assay(paad_data.noSNPs), dist=2, mafcut=0.05)
-assay(paad_data_noSNPs) <- paad_data.noSNPs
-nrow(paad_data.noSNPs)
-```
-
-```{r}
-paad_data_noSNPs <- paad_data
-assay(paad_data_noSNPs) <- paad_data.noSNPs
-```
-
 
 ```{r Transformamos beta-values a M-values}
 #En este caso para aumentar la fiabilidad del estudio se transforman los b-value a M-value
@@ -54,8 +38,7 @@ assay(coad_data_m) = coad_mvalues
 assay(luad_data_m) = luad_mvalues
 ```
 
-##Matriz modelo y diferencial
-```{r}
+```{r Matriz modelo y diferencial PAAD}
 #BiocManager::install("DMRcate")
 library(DMRcate)
 type_paad <- factor(paad_data$gender)
@@ -64,8 +47,7 @@ myannotation_paad <- cpg.annotate("array", assay(paad_data), arraytype = "450K",
 analysis.type="differential", design=design_paad, coef=2)
 ```
 
-```{r}
-#BiocManager::install("DMRcate")
+```{r Matriz modelo y diferencial LIHC}
 library(DMRcate)
 type_lihc <- factor(lihc_data$gender)
 design_lihc <- model.matrix(~type_lihc)
@@ -73,8 +55,7 @@ myannotation_lihc <- cpg.annotate("array", assay(lihc_data), arraytype = "450K",
 analysis.type="differential", design=design_lihc, coef=2)
 ```
 
-```{r}
-#BiocManager::install("DMRcate")
+```{r Matriz modelo y diferencial COAD}
 library(DMRcate)
 type_coad <- factor(coad_data$gender)
 design_coad <- model.matrix(~type_coad)
@@ -82,8 +63,7 @@ myannotation_coad <- cpg.annotate("array", assay(coad_data), arraytype = "450K",
 analysis.type="differential", design=design_coad, coef=2)
 ```
 
-```{r}
-#BiocManager::install("DMRcate")
+```{r Matriz modelo y diferencial LUAD}
 library(DMRcate)
 type_luad <- factor(luad_data$gender)
 design_luad <- model.matrix(~type_luad)
