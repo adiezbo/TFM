@@ -1,0 +1,115 @@
+---
+title: "Identificacion DMR Genero"
+author: "Ana Diez Borge"
+date: "7 de diciembre de 2020"
+output: html_document
+---
+
+```{r Cargamos datos de metilación}
+Data_dir <- "~/Master UOC - Bioinfo y bioestadistica/TFM/Rstudio"
+Results_dir <- "~/Master UOC - Bioinfo y bioestadistica/TFM/Rstudio/Results"
+setwd(Data_dir)
+coad_data = readRDS(file = "coad_data.RDS")
+lihc_data = readRDS(file = "lihc_data.RDS")
+paad_data = readRDS(file = "paad_data.RDS")
+luad_data = readRDS(file = "luad_data.RDS")
+```
+
+```{r filtrado de muestras}
+#Las sondas que están a 0, 1 o 2 nucleótidos de la metilcitosina de interés muestran una distribución marcadamente diferente a las más lejanas en el tejido sano. Por esto, para evitar la confusión se eliminan las sondas que estan a una distancia de 2 nucleotidos o menos de una CpG cuya frecuencia alélica menor sea igual a 0.05
+library(DMRcate)
+nrow(assay(paad_data))
+paad_data_noSNPs <- paad_data
+paad_data.noSNPs <- rmSNPandCH(assay(paad_data.noSNPs), dist=2, mafcut=0.05)
+assay(paad_data_noSNPs) <- paad_data.noSNPs
+nrow(paad_data.noSNPs)
+```
+
+```{r}
+paad_data_noSNPs <- paad_data
+assay(paad_data_noSNPs) <- paad_data.noSNPs
+```
+
+
+```{r Transformamos beta-values a M-values}
+#En este caso para aumentar la fiabilidad del estudio se transforman los b-value a M-value
+#Para obtener los M-values creo una la funcion mvalues
+mvalues <- function(bvalue) {
+      m <- log2(bvalue/(1 - bvalue))
+      return(m)}
+
+paad_mvalues <- apply(assay(paad_data), c(1,2), mvalues)
+lihc_mvalues <- apply(assay(lihc_data), c(1,2), mvalues)
+coad_mvalues <- apply(assay(coad_data), c(1,2), mvalues)
+luad_mvalues <- apply(assay(luad_data), c(1,2), mvalues)
+
+paad_data_m <- paad_data
+lihc_data_m <- lihc_data
+coad_data_m <- coad_data
+luad_data_m <- luad_data
+
+assay(paad_data_m) = paad_mvalues
+assay(lihc_data_m) = lihc_mvalues
+assay(coad_data_m) = coad_mvalues
+assay(luad_data_m) = luad_mvalues
+```
+
+##Matriz modelo y diferencial
+```{r}
+#BiocManager::install("DMRcate")
+library(DMRcate)
+type_paad <- factor(paad_data$gender)
+design_paad <- model.matrix(~type_paad)
+myannotation_paad <- cpg.annotate("array", assay(paad_data), arraytype = "450K",
+analysis.type="differential", design=design_paad, coef=2)
+```
+
+```{r}
+#BiocManager::install("DMRcate")
+library(DMRcate)
+type_lihc <- factor(lihc_data$gender)
+design_lihc <- model.matrix(~type_lihc)
+myannotation_lihc <- cpg.annotate("array", assay(lihc_data), arraytype = "450K",
+analysis.type="differential", design=design_lihc, coef=2)
+```
+
+```{r}
+#BiocManager::install("DMRcate")
+library(DMRcate)
+type_coad <- factor(coad_data$gender)
+design_coad <- model.matrix(~type_coad)
+myannotation_coad <- cpg.annotate("array", assay(coad_data), arraytype = "450K",
+analysis.type="differential", design=design_coad, coef=2)
+```
+
+```{r}
+#BiocManager::install("DMRcate")
+library(DMRcate)
+type_luad <- factor(luad_data$gender)
+design_luad <- model.matrix(~type_luad)
+myannotation_luad <- cpg.annotate("array", assay(luad_data), arraytype = "450K",
+analysis.type="differential", design=design_luad, coef=2)
+```
+
+```{r}
+dmrcoutput_paad <- dmrcate(myannotation_paad, lambda=1000, C=2)
+dmrcoutput_lihc <- dmrcate(myannotation_lihc, lambda=1000, C=2)
+dmrcoutput_coad <- dmrcate(myannotation_coad, lambda=1000, C=2)
+dmrcoutput_luad <- dmrcate(myannotation_luad, lambda=1000, C=2)
+```
+
+```{r}
+results.ranges_paad <- extractRanges(dmrcoutput_paad, genome = "hg19")
+results.ranges_lihc <- extractRanges(dmrcoutput_lihc, genome = "hg19")
+results.ranges_coad <- extractRanges(dmrcoutput_coad, genome = "hg19")
+results.ranges_luad <- extractRanges(dmrcoutput_luad, genome = "hg19")
+```
+
+```{r}
+library(DMRcate)
+groups <- c(female="magenta", male="forestgreen")
+cols_paad <- groups[as.character(type_paad)]
+DMR.plot(ranges=results.ranges_paad, dmr=1, CpGs=assay(paad_data), what="Beta",
+arraytype = "450K", phen.col=cols_paad, genome="hg19")
+```
+
