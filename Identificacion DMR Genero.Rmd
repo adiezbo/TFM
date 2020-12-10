@@ -15,29 +15,6 @@ paad_data = readRDS(file = "paad_data.RDS")
 luad_data = readRDS(file = "luad_data.RDS")
 ```
 
-```{r Transformamos beta-values a M-values}
-#En este caso para aumentar la fiabilidad del estudio se transforman los b-value a M-value
-#Para obtener los M-values creo una la funcion mvalues
-mvalues <- function(bvalue) {
-      m <- log2(bvalue/(1 - bvalue))
-      return(m)}
-
-paad_mvalues <- apply(assay(paad_data), c(1,2), mvalues)
-lihc_mvalues <- apply(assay(lihc_data), c(1,2), mvalues)
-coad_mvalues <- apply(assay(coad_data), c(1,2), mvalues)
-luad_mvalues <- apply(assay(luad_data), c(1,2), mvalues)
-
-paad_data_m <- paad_data
-lihc_data_m <- lihc_data
-coad_data_m <- coad_data
-luad_data_m <- luad_data
-
-assay(paad_data_m) = paad_mvalues
-assay(lihc_data_m) = lihc_mvalues
-assay(coad_data_m) = coad_mvalues
-assay(luad_data_m) = luad_mvalues
-```
-
 ```{r Matriz modelo y contraste PAAD}
 #BiocManager::install("DMRcate")
 library(DMRcate)
@@ -100,6 +77,7 @@ GRanges object with 3 ranges and 8 metadata columns:
   [3]                                      DIP2C
   -------
   seqinfo: 3 sequences from an unspecified genome; no seqlengths
+
 ```{r}
 results.ranges_paad <- extractRanges(dmrcoutput_paad, genome = "hg19")
 results.ranges_lihc <- extractRanges(dmrcoutput_lihc, genome = "hg19")
