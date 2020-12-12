@@ -5,7 +5,7 @@ date: "7 de diciembre de 2020"
 output: html_document
 ---
 
-```{r Cargamos datos de metilación}
+```{r Cargamos datos de metilaciÃ³n}
 Data_dir <- "~/Master UOC - Bioinfo y bioestadistica/TFM/Rstudio"
 Results_dir <- "~/Master UOC - Bioinfo y bioestadistica/TFM/Rstudio/Results"
 setwd(Data_dir)
@@ -15,23 +15,7 @@ paad_data = readRDS(file = "paad_data.RDS")
 luad_data = readRDS(file = "luad_data.RDS")
 ```
 
-```{r filtrado de muestras}
-#Las sondas que están a 0, 1 o 2 nucleótidos de la metilcitosina de interés muestran una distribución marcadamente diferente a las más lejanas en el tejido sano. Por esto, para evitar la confusión se eliminan las sondas que estan a una distancia de 2 nucleotidos o menos de una CpG cuya frecuencia alélica menor sea igual a 0.05
-library(DMRcate)
-nrow(assay(paad_data))
-paad_data_noSNPs <- paad_data
-paad_data.noSNPs <- rmSNPandCH(assay(paad_data_noSNPs), dist=2, mafcut=0.05)
-assay(paad_data_noSNPs, withDimnames=FALSE) <- paad_data.noSNPs
-nrow(paad_data.noSNPs)
-```
-
-```{r}
-paad_data_noSNPs <- paad_data
-assay(paad_data_noSNPs) <- paad_data.noSNPs
-```
-
-
-```{r Transformamos beta-values a M-values}
+```{r Transformacion beta-values a M-values}
 #En este caso para aumentar la fiabilidad del estudio se transforman los b-value a M-value
 #Para obtener los M-values creo una la funcion mvalues
 mvalues <- function(bvalue) {
@@ -54,9 +38,7 @@ assay(coad_data_m) = coad_mvalues
 assay(luad_data_m) = luad_mvalues
 ```
 
-
-##Matriz modelo y diferencial
-```{r PAAD}
+```{r Identificacion PAAD}
 library(DMRcate)
 type_paad <- factor(paad_data_m$definition)
 gender_paad <- factor(paad_data_m$gender)
@@ -80,7 +62,7 @@ enrichment_GO_paad <- enrichment_GO_paad[order(enrichment_GO_paad$P.DE),]
 head(as.matrix(enrichment_GO_paad), 10)
 ```
 
-```{r LIHC}
+```{r Identificacion DMRs LIHC}
 #BiocManager::install("DMRcate")
 library(DMRcate)
 library(missMethyl)
@@ -107,7 +89,7 @@ enrichment_GO_lihc <- enrichment_GO_lihc[order(enrichment_GO_lihc$P.DE),]
 head(as.matrix(enrichment_GO_lihc), 10)
 ```
 
-```{r COAD}
+```{r Identificacion DMRs COAD}
 #BiocManager::install("DMRcate")
 library(DMRcate)
 library(missMethyl)
@@ -134,7 +116,7 @@ enrichment_GO_coad <- enrichment_GO_coad[order(enrichment_GO_coad$P.DE),]
 head(as.matrix(enrichment_GO_coad), 10)
 ```
 
-```{r LUAD}
+```{r Identificacion DMRs LUAD}
 #BiocManager::install("DMRcate")
 library(DMRcate)
 type_luad <- factor(luad_data_m$definition)
