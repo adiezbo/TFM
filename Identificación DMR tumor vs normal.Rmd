@@ -1,11 +1,11 @@
 ---
-title: "Identificación DMR tumor vs normal"
+title: "IdentificaciÃ³n DMR tumor vs normal"
 author: "Ana Diez Borge"
 date: "13 de diciembre de 2020"
 output: html_document
 ---
 
-```{r Cargamos datos de metilación}
+```{r Cargamos datos de metilaciÃ³n}
 Data_dir <- "~/Master UOC - Bioinfo y bioestadistica/TFM/Rstudio"
 Results_dir <- "~/Master UOC - Bioinfo y bioestadistica/TFM/Rstudio/Results"
 setwd(Data_dir)
@@ -38,8 +38,6 @@ assay(coad_data_m) = coad_mvalues
 assay(luad_data_m) = luad_mvalues
 ```
 
-
-##Matriz modelo y diferencial
 ```{r PAAD}
 library(DMRcate)
 type_paad_tn <- factor(paad_data_m$definition)
