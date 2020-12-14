@@ -1,5 +1,5 @@
 ---
-title: "Prueba Izaskun"
+title: "Identificación DMRs Tumoral vs Normal con las covariantes género y edad"
 author: "Ana Diez Borge"
 date: "14 de diciembre de 2020"
 output: html_document
