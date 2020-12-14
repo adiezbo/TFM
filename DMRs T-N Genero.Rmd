@@ -8,7 +8,7 @@ output: html_document
 ```{r PAAD}
 library(DMRcate)
 
-#Matrices dise�o 
+#Matrices diseño 
 gender_paad <- as.factor(paad_data$gender)
 definition_paad <- as.factor(paad_data$definition)
 age_paad <- as.factor(paad_data$age_at_index)
@@ -19,32 +19,31 @@ table(age_paad, definition_paad)
 #Matrices de contraste
 design_interact_paad <- model.matrix(~definition_paad*gender_paad)
 design_interact_paad_age <- model.matrix(~definition_paad*age_paad)
+design_tumor_paad <- model.matrix(~definition_paad)
+design_gender_paad <- model.matrix(~gender_paad)
+design_age_paad <- model.matrix(~age_paad)
 
+#Interaccion tumor-normal covariante genero
 out_interact_paad  <- dmrcate(cpg.annotate("array", assay(paad_data), arraytype = "450K",
                       analysis.type="differential", design=design_interact_paad, coef=2), lambda = 1000)
-## 80 probes
 
-#out_interact_paad_age  <- dmrcate(cpg.annotate("array", assay(paad_data), arraytype = "450K",
+#Interaccion tumor-normal covariante edad
+out_interact_paad_age  <- dmrcate(cpg.annotate("array", assay(paad_data), arraytype = "450K",
                       #analysis.type="differential", design=design_interact_paad_age, coef=2), lambda = 1000)
-##No differences
 
-design_tumor_paad <- model.matrix(~definition_paad)
+#Interaccion tumor-normal 
 out_tumor_paad  <- dmrcate(cpg.annotate("array", assay(paad_data), arraytype = "450K",
                       analysis.type="differential", design=design_tumor_paad, coef=2), lambda = 1000)
 
-## 34839 probes
-
-design_gender_paad <- model.matrix(~gender_paad)
+#Interaccion male-female 
 out_gender_paad  <- dmrcate(cpg.annotate("array", assay(paad_data), arraytype = "450K",
                       analysis.type="differential", design=design_gender_paad, coef=2), lambda = 1000)
-## 19 probes, which is lower than the interaction, interesting
 
-design_age_paad <- model.matrix(~age_paad)
+#Interaccion edades
 out_age_paad  <- dmrcate(cpg.annotate("array", assay(paad_data), arraytype = "450K",
                       analysis.type="differential", design=design_age_paad, coef=2), lambda = 1000)
-#480 probes
 
-
+#Genes that are in the interacting model but not explained by gender only
 gender_paad <- gsub(' ', '' ,
                strsplit(paste(unlist(extractRanges(out_gender_paad)$overlapping.genes), collapse = ','),
                         split = ',')[[1]])
@@ -52,14 +51,10 @@ gender_paad <- gsub(' ', '' ,
 interact_paad <- gsub(' ', '' ,
                strsplit(paste(unlist(extractRanges(out_interact_paad)$overlapping.genes), collapse = ','),
                         split = ',')[[1]])
-
-## genes that are in the interacting model but not explained by gender only
 interact_paad[!interact_paad %in% gender_paad]
 length(interact_paad[!interact_paad %in% gender_paad])
- ## interact[!interact %in% gender]
- ## [1] "Y_RNA"   "TRIM58"  "TRIM15"  "SNORA20" "CCNA1"   "SNORD37" "SNORA15"
- ## [8] "HOXA7"   "TRIM15"  "SNORA20" "NA"      "SNORA38" "SLC44A4" "SNORA20"
-
+ 
+#Genes that are in the interacting model but not explained by age only
 age_paad <- gsub(' ', '' ,
                strsplit(paste(unlist(extractRanges(out_age_paad)$overlapping.genes), collapse = ','),
                         split = ',')[[1]])
@@ -73,6 +68,7 @@ length(interact_paad_age[!interact_paad_age %in% age_luad])
 ```{r LIHC}
 library(DMRcate)
 
+#Matrices diseño
 gender_lihc <- as.factor(lihc_data$gender)
 definition_lihc <- as.factor(lihc_data$definition)
 age_lihc <- as.factor(lihc_data$age_at_index)
@@ -80,34 +76,38 @@ age_lihc <- as.factor(lihc_data$age_at_index)
 table(gender_lihc, definition_lihc)
 table(age_lihc, definition_lihc)
 
+#Matrices contraste
 design_interact_lihc <- model.matrix(~definition_lihc*gender_lihc)
 design_interact_lihc_age <- model.matrix(~definition_lihc*age_lihc)
+design_tumor_lihc <- model.matrix(~definition_lihc)
+design_gender_lihc <- model.matrix(~gender_lihc)
+design_age_lihc <- model.matrix(~age_lihc)
 
+#Interaccion tumor-normal covariante genero
 out_interact_lihc  <- dmrcate(cpg.annotate("array", assay(lihc_data), arraytype = "450K",
                       analysis.type="differential", design=design_interact_lihc, coef=2), lambda = 1000)
-## 116627 probes tumor gender
 
+#Interaccion tumor-normal covariante edad
 out_interact_lihc_age  <- dmrcate(cpg.annotate("array", assay(lihc_data), arraytype = "450K",
                       analysis.type="differential", design=design_interact_lihc_age, coef=2), lambda = 1000)
-##19831 age tumor edad
 
 
-design_tumor_lihc <- model.matrix(~definition_lihc)
+#Interaccion tumor-normal
 out_tumor_lihc  <- dmrcate(cpg.annotate("array", assay(lihc_data), arraytype = "450K",
                       analysis.type="differential", design=design_tumor_lihc, coef=2), lambda = 1000)
 
-## 182559 probes solo tumor
 
-design_gender_lihc <- model.matrix(~gender_lihc)
+#Interaccion male-female
 out_gender_lihc  <- dmrcate(cpg.annotate("array", assay(lihc_data), arraytype = "450K",
                       analysis.type="differential", design=design_gender_lihc, coef=2), lambda = 1000)
-## 337 probes, which is lower than the interaction, interesting
 
-design_age_lihc <- model.matrix(~age_lihc)
+
+#Interaccion edades
 out_age_lihc  <- dmrcate(cpg.annotate("array", assay(lihc_data), arraytype = "450K",
                       analysis.type="differential", design=design_age_lihc, coef=2), lambda = 1000)
-##19325 probes solo edad
 
+
+#Genes that are in the interacting model but not explained by gender only
 gender_lihc <- gsub(' ', '' ,
                strsplit(paste(unlist(extractRanges(out_gender_lihc)$overlapping.genes), collapse = ','),
                         split = ',')[[1]])
@@ -116,11 +116,11 @@ interact_lihc <- gsub(' ', '' ,
                strsplit(paste(unlist(extractRanges(out_interact_lihc)$overlapping.genes), collapse = ','),
                         split = ',')[[1]])
 
-## genes that are in the interacting model but not explained by gender only
 length(interact_lihc[!interact_lihc %in% gender_lihc])
-#interact_lihc[!interact_lihc %in% gender_lihc]
-## 48081
+interact_lihc[!interact_lihc %in% gender_lihc]
 
+
+#Genes that are in the interacting model but not explained by age only
 age_lihc <- gsub(' ', '' ,
                strsplit(paste(unlist(extractRanges(out_age_lihc)$overlapping.genes), collapse = ','),
                         split = ',')[[1]])
@@ -129,7 +129,7 @@ interact_lihc_age <- gsub(' ', '' ,
                strsplit(paste(unlist(extractRanges(out_interact_lihc_age)$overlapping.genes), collapse = ','),
                         split = ',')[[1]])
 length(interact_lihc_age[!interact_lihc_age %in% gender_lihc])
-##8049
+
 ```
 
 ```{r COAD}
