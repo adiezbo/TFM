@@ -1,11 +1,11 @@
 ---
-title: "Identificación DMRs Edad"
+title: "IdentificaciÃ³n DMRs Edad"
 author: "Ana Diez Borge"
 date: "13 de diciembre de 2020"
 output: html_document
 ---
 
-```{r Cargamos datos de metilación}
+```{r Cargamos datos de metilaciÃ³n}
 Data_dir <- "~/Master UOC - Bioinfo y bioestadistica/TFM/Rstudio"
 Results_dir <- "~/Master UOC - Bioinfo y bioestadistica/TFM/Rstudio/Results"
 setwd(Data_dir)
@@ -39,8 +39,6 @@ assay(coad_data_m) = coad_mvalues
 assay(luad_data_m) = luad_mvalues
 ```
 
-
-##Matriz modelo y diferencial
 ```{r PAAD age}
 library(DMRcate)
 type_paad <- factor(paad_data_m$definition)
