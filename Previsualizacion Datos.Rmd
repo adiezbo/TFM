@@ -5,7 +5,7 @@ date: "13 de noviembre de 2020"
 output: html_document
 ---
 
-```{r Cargamos datos de metilación}
+```{r Cargamos datos de metilaciÃ³n}
 Data_dir <- "~/Master UOC - Bioinfo y bioestadistica/TFM/Rstudio"
 setwd(Data_dir)
 coad_data = readRDS(file = "coad_data.RDS")
@@ -62,22 +62,22 @@ densityPlot(assay(luad_data),legend = TRUE, main = "LUAD beta-values")
 
 ```{r qlots}
 library(ggplot2)
-#PAAD tejido canceroso y normal
+#PAAD tejido tumoral y normal
 qplot(assay(paad_data)[ , grepl( "01A" , colnames( assay(paad_data) ) ) ] , fill=I(rgb(0.72, 0.201, 0.176,0.6)), main = "Tejido Tumoral PAAD", xlab = "Beta-values", ylab = "Count", bins = 50)
 qplot(assay(paad_data)[ , grepl( "11A" , colnames( assay(paad_data) ) ) ] , fill=I(rgb(0.1,0.2,0.4,0.6)), main = "Tejido Normal PAAD", xlab = "Beta-values", ylab = "Count", bins = 50)
 
-#LUAD tejido canceroso y normal
+#LUAD tejido tumoral y normal
 qplot(assay(luad_data)[ , grepl( "01A" , colnames( assay(luad_data) ) ) ] , fill=I(rgb(0.72, 0.201, 0.176,0.6)), main = "Tejido Tumoral LUAD", xlab = "Beta-values", ylab = "Count", bins = 50)
 
 qplot(assay(luad_data)[ , grepl( "11A" , colnames( assay(luad_data) ) ) ] , fill=I(rgb(0.1,0.2,0.4,0.6)), main = "Tejido Normal LUAD", xlab = "Beta-values", ylab= "Count", bins = 50 )
 
 
-#LIHC tejido canceroso y normal
+#LIHC tejido tumoral y normal
 qplot(assay(lihc_data)[ , grepl( "01A" , colnames( assay(lihc_data) ) ) ] , fill=I(rgb(0.72, 0.201, 0.176,0.6)), main = "Tejido Tumoral LIHC", xlab = "Beta-values", ylab = "Count", bins = 50)
 
 qplot(assay(lihc_data)[ , grepl( "11A" , colnames( assay(lihc_data) ) ) ] , fill=I(rgb(0.1,0.2,0.4,0.6)), main = "Tejido Normal LIHC", xlab = "Beta-values", ylab= "Count", bins = 50 )
 
-#COAD tejido canceroso y normal
+#COAD tejido tumoral y normal
 qplot(assay(coad_data)[ , grepl( "01A" , colnames( assay(coad_data) ) ) ] , fill=I(rgb(0.72, 0.201, 0.176,0.6)), main = "Tejido Tumoral COAD", xlab = "Beta-values", ylab = "Count", bins = 50)
 
 qplot(assay(coad_data)[ , grepl( "11A" , colnames( assay(coad_data) ) ) ] , fill=I(rgb(0.1,0.2,0.4,0.6)), main = "Tejido Normal COAD", xlab = "Beta-values", ylab= "Count", bins = 50 )
@@ -120,7 +120,7 @@ TCGAvisualize_meanMethylation(coad_data,
 ```{r Diferencias entre medias de metilacion Norm-Tum Covariable Sexo}
 library(TCGAbiolinks)
 setwd(Data_dir)
-#Separamos los datos en función del género del paciente
+#Separamos los datos en funciÃ³n del gÃ©nero del paciente
 
 #PAAD
 TCGAvisualize_meanMethylation(paad_data[paad_data$gender == "male"],
@@ -183,37 +183,68 @@ TCGAvisualize_meanMethylation(coad_data[coad_data$gender == "female"],
                               filename = 'methylationMean_COAD_female_norm-tum.png')
 ```
 
-
-```{r Diferencias entre medias de metilacion Norm-Tum}
+```{r Diferencias entre medias de metilacion Norm-Tum Covariable Edad}
 library(TCGAbiolinks)
-setwd(Data_dir)
-TCGAvisualize_meanMethylation(paad_data,
-                              groupCol = "gender",
-                              group.legend = "Groups",
-                              title = "Mean DNA methylation PAAD",
-                              print.pvalue = TRUE,
-                              filename = 'methylationMean_PAAD_Gender_norm-tum.png')
+setwd(Results_dir)
+#PAAD
+TCGAvisualize_meanMethylation(paad_data[paad_data$definition == "Primary solid Tumor"],
+                               groupCol = "age_at_index",
+                               #group.legend = "Groups",
+                               print.pvalue = TRUE,
+                               title = "Mean DNA methylation Age Tumor PAAD",
+                               filename = 'methylationMean_PAAD_age_tum.png')
 
-TCGAvisualize_meanMethylation(lihc_data,
-                              groupCol = "gender",
-                              group.legend = "Groups",
-                              title = "Mean DNA methylation LIHC",
-                              print.pvalue = TRUE,
-                              filename = 'methylationMean_LIHC_Gender_norm-tum.png')
+TCGAvisualize_meanMethylation(paad_data[paad_data$definition == "Solid Tissue Normal"],
+                               groupCol = "age_at_index",
+                               #group.legend = "Groups",
+                               print.pvalue = TRUE,
+                               title = "Mean DNA methylation Age Normal PAAD",
+                               filename = 'methylationMean_PAAD_age_norm.png')
 
-TCGAvisualize_meanMethylation(luad_data,
-                              groupCol = "gender",
-                              group.legend = "Groups",
-                              title = "Mean DNA methylation LUAD",
-                              print.pvalue = TRUE,
-                              filename = 'methylationMean_LUAD_Gender_norm-tum.png')
+#COAD
+TCGAvisualize_meanMethylation(coad_data[coad_data$definition == "Primary solid Tumor"],
+                               groupCol = "age_at_index",
+                               #group.legend = "Groups",
+                               print.pvalue = TRUE,
+                               title = "Mean DNA methylation Age Tumor COAD",
+                               filename = 'methylationMean_COAD_age_tum.png')
 
-TCGAvisualize_meanMethylation(coad_data,
-                              groupCol = "gender",
-                              group.legend = "Groups",
-                              title = "Mean DNA methylation COAD",
-                              print.pvalue = TRUE,
-                              filename = 'methylationMean_COAD_Gender_norm-tum.png')
+TCGAvisualize_meanMethylation(coad_data[coad_data$definition == "Solid Tissue Normal"],
+                               groupCol = "age_at_index",
+                               #group.legend = "Groups",
+                               print.pvalue = TRUE,
+                               title = "Mean DNA methylation Age Normal COAD",
+                               filename = 'methylationMean_COAD_age_norm.png')
+
+#LIHC
+TCGAvisualize_meanMethylation(lihc_data[lihc_data$definition == "Primary solid Tumor"],
+                               groupCol = "age_at_index",
+                               group.legend = "Groups",
+                               print.pvalue = TRUE,
+                               title = "Mean DNA methylation Age Tumor LIHC",
+                               filename = 'methylationMean_LIHC_age_tum.png')
+
+TCGAvisualize_meanMethylation(lihc_data[lihc_data$definition == "Solid Tissue Normal"],
+                               groupCol = "age_at_index",
+                               #group.legend = "Groups",
+                               print.pvalue = TRUE,
+                               title = "Mean DNA methylation Age Normal LIHC",
+                               filename = 'methylationMean_LIHC_age_norm.png')
+
+#LUAD
+TCGAvisualize_meanMethylation(luad_data[luad_data$definition == "Primary solid Tumor"],
+                               groupCol = "age_at_index",
+                               #group.legend = "Groups",
+                               print.pvalue = TRUE,
+                               title = "Mean DNA methylation Age Tumor LUAD",
+                               filename = 'methylationMean_LUAD_age_tum.png')
+
+TCGAvisualize_meanMethylation(luad_data[luad_data$definition == "Solid Tissue Normal"],
+                               groupCol = "age_at_index",
+                               print.pvalue = TRUE,
+                               title = "Mean DNA methylation Age Normal LUAD",
+                               filename = 'methylationMean_LUAD_age_norm.png')
+
 ```
 
 
