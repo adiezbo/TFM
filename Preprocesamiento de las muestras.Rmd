@@ -1,5 +1,5 @@
 ---
-title: "Selección Muestras"
+title: "Preprocesamiento de las muestras"
 author: "Ana Diez Borge"
 date: "31 de octubre de 2020"
 output: html_document
@@ -11,10 +11,6 @@ coad_data = readRDS(file = "coad_data.RDS")
 lihc_data = readRDS(file = "lihc_data.RDS")
 paad_data = readRDS(file = "paad_data.RDS")
 luad_data = readRDS(file = "luad_data.RDS")
-#barcodes_coad <- as.character(read_csv("barcodes_coad.txt"))
-#barcodes_lihc <- read_csv("barcodes_lihc.txt")
-#barcodes_paad <- read_csv("barcodes_paad.txt")
-#barcodes_luad <- read_csv("barcodes_luad.txt")
 ```
 
 ```{r seleccion muestras coad}
@@ -77,11 +73,43 @@ luad_data <- luad_data[, cols.luad.ok]
 dim(luad_data)
 ```
 
-
 ```{r muestras duplicadas paad}
 table(strtrim(barcodes_paad, 12), substr(barcodes_paad, 14,16))
 ```
+##PREPROCESAMIENTO DE LOS DATOS##
+```{r}
+dim(coad_data)
+dim(luad_data)
+dim(paad_data)
+dim(lihc_data)
+```
 
+```{r}
+#Eliminamos todos los NA
+coad_data <- subset(coad_data,subset = (rowSums(is.na(assay(coad_data))) == 0))
+lihc_data <- subset(lihc_data,subset = (rowSums(is.na(assay(lihc_data))) == 0))
+paad_data <- subset(paad_data,subset = (rowSums(is.na(assay(paad_data))) == 0))
+luad_data <- subset(luad_data,subset = (rowSums(is.na(assay(luad_data))) == 0))
+
+dim(coad_data)
+dim(luad_data)
+dim(paad_data)
+dim(lihc_data)
+```
+
+```{r Se eliminan los datos pertenecientes a los cromosomas sexuales}
+coad_data <- subset(coad_data,subset = !as.character(seqnames(coad_data)) %in% c("chrNA","chrX","chrY"))
+dim(coad_data)
+
+lihc_data <- subset(lihc_data,subset = !as.character(seqnames(lihc_data)) %in% c("chrNA","chrX","chrY"))
+dim(lihc_data)
+
+paad_data <- subset(paad_data,subset = !as.character(seqnames(paad_data)) %in% c("chrNA","chrX","chrY"))
+dim(paad_data)
+
+luad_data <- subset(luad_data,subset = !as.character(seqnames(luad_data)) %in% c("chrNA","chrX","chrY"))
+dim(luad_data)
+```
 ```{r Guardamos los datos actualizados sin las muestras repetidas}
 Data_dir <- "~/Master UOC - Bioinfo y bioestadistica/TFM/Rstudio"
 setwd(Data_dir)
