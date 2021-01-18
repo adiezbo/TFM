@@ -17,8 +17,8 @@ table(gender_paad, definition_paad)
 table(age_paad, definition_paad)
 
 #Matrices de contraste
-design_interact_paad <- model.matrix(~definition_paad*gender_paad)
-design_interact_paad_age <- model.matrix(~definition_paad*age_paad)
+design_interact_paad <- model.matrix(~definition_paad:gender_paad)
+design_interact_paad_age <- model.matrix(~definition_paad:age_paad)
 design_tumor_paad <- model.matrix(~definition_paad)
 design_gender_paad <- model.matrix(~gender_paad)
 design_age_paad <- model.matrix(~age_paad)
@@ -77,8 +77,8 @@ table(gender_lihc, definition_lihc)
 table(age_lihc, definition_lihc)
 
 #Matrices contraste
-design_interact_lihc <- model.matrix(~definition_lihc*gender_lihc)
-design_interact_lihc_age <- model.matrix(~definition_lihc*age_lihc)
+design_interact_lihc <- model.matrix(~definition_lihc:gender_lihc)
+design_interact_lihc_age <- model.matrix(~definition_lihc:age_lihc)
 design_tumor_lihc <- model.matrix(~definition_lihc)
 design_gender_lihc <- model.matrix(~gender_lihc)
 design_age_lihc <- model.matrix(~age_lihc)
@@ -207,8 +207,8 @@ table(gender_luad, definition_luad)
 table(age_luad, definition_luad)
 
 #Matrices de contraste
-design_interact_luad <- model.matrix(~definition_luad*gender_luad)
-design_interact_luad_age <- model.matrix(~definition_luad*age_luad)
+design_interact_luad <- model.matrix(~definition_luad:gender_luad)
+design_interact_luad_age <- model.matrix(~definition_luad:age_luad)
 design_tumor_luad <- model.matrix(~definition_luad)
 design_gender_luad <- model.matrix(~gender_luad)
 design_age_luad <- model.matrix(~age_luad)
